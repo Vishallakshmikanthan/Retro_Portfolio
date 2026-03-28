@@ -1,0 +1,163 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ──────────────────────────────────────────────
+   GLOBAL TOKENS (RETRO OS - ZERO GLOW)
+   STRICT WINDOWS 98 / 2000 PALETTE
+────────────────────────────────────────────── */
+:root {
+  --bg: #c0c0c0;
+  --bg-panel: #e0e0e0;
+  --primary: #000080; /* Classic Navy */
+  --text: #000000;
+  --white: #ffffff;
+  --gray-dark: #808080;
+  --border-light: #ffffff;
+  --border-dark: #808080;
+}
+
+/* ──────────────────────────────────────────────
+   NUCLEAR RESET: REMOVE ALL MODERN EFFECTS
+────────────────────────────────────────────── */
+* {
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  text-shadow: none !important;
+  background-clip: border-box !important;
+  -webkit-background-clip: border-box !important;
+  mask-image: none !important;
+  -webkit-mask-image: none !important;
+  filter: none !important;
+}
+
+html, body {
+  background-color: #c0c0c0 !important;
+  background-image: none !important;
+  color: var(--text);
+  font-family: 'Courier New', Courier, monospace;
+  overflow-x: hidden;
+  margin: 0;
+}
+
+/* Force override for ALL gradients (KEEP THIS) */
+[style*="gradient"], [class*="gradient"], 
+[style*="radial"], [class*="radial"] {
+  background-image: none !important;
+}
+
+/* Clear any ambient glows or neon orbs */
+.ambient-glow, .neon-orb, .project-card-glow, .nav-underline-pill, .scroll-hint {
+  display: none !important;
+  opacity: 0 !important;
+  visibility: hidden !important;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Courier New', Courier, monospace !important;
+  text-transform: uppercase !important;
+  font-weight: 900 !important;
+}
+
+/* ──────────────────────────────────────────────
+   RETRO UI COMPONENTS
+ ────────────────────────────────────────────── */
+
+.retro-heading {
+  letter-spacing: 0.1em;
+  color: var(--primary);
+  border-bottom: 2px solid currentColor;
+  display: inline-block;
+  margin-bottom: 1rem;
+}
+
+.section-container {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 2rem;
+}
+
+section {
+  background-color: var(--bg);
+  border-bottom: 2px solid var(--gray-dark);
+}
+
+/* ──────────────────────────────────────────────
+   HEADER & NAV
+────────────────────────────────────────────── */
+.site-header {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  background-color: var(--bg-panel);
+  border-bottom: 2px solid var(--gray-dark);
+}
+
+.header-inner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.5rem 2rem;
+}
+
+.logo-monogram {
+  background: var(--primary);
+  color: #fff;
+  padding: 0.25rem 0.5rem;
+  font-weight: 900;
+  font-size: 1.25rem;
+}
+
+.nav-link {
+  color: var(--text);
+  text-decoration: none;
+  font-weight: bold;
+  padding: 0.5rem 1rem;
+}
+
+.nav-link:hover, .nav-link--active {
+  background: var(--primary);
+  color: #fff;
+}
+
+/* ──────────────────────────────────────────────
+   SKILLS & CARDS
+────────────────────────────────────────────── */
+.retro-card {
+  background: var(--white) !important;
+  border: 2px solid var(--text) !important;
+  position: relative;
+}
+
+.skill-badge {
+  background: var(--bg);
+  border: 1px solid var(--gray-dark);
+  color: var(--text);
+  padding: 0.2rem 0.5rem;
+  font-size: 0.8rem;
+  margin: 0.2rem;
+  display: inline-block;
+}
+
+/* ──────────────────────────────────────────────
+   FOOTER
+────────────────────────────────────────────── */
+.site-footer {
+  background: var(--bg-panel);
+  border-top: 4px double var(--gray-dark);
+  padding: 2rem;
+  text-align: center;
+}
+
+/* Ensure no rounded corners from Tailwind classes */
+.rounded-full, .rounded-xl, .rounded-2xl, .rounded-3xl, .rounded-lg, .rounded-md {
+  border-radius: 0 !important;
+}
+
+.desktop-icon:hover {
+  background: rgba(0, 0, 128, 0.3) !important;
+  outline: 1px dotted #fff !important;
+}
+.desktop-icon:active {
+  background: rgba(0, 0, 128, 0.6) !important;
+}
