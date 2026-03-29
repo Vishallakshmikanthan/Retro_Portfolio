@@ -47,16 +47,19 @@ const CARD_GAP = 24
 export default function AchievementsSection() {
   const sectionRef = useRef(null)
   const trackRef = useRef(null)
+  const bgRef = useRef(null)
 
   useEffect(() => {
     const section = sectionRef.current
     const track = trackRef.current
-    if (!section || !track) return
+    const bg = bgRef.current
+    if (!section || !track || !bg) return
 
     const id = requestAnimationFrame(() => {
       const ctx = gsap.context(() => {
         const travelX = -(track.scrollWidth - window.innerWidth + 200)
 
+        // Move cards normally
         gsap.to(track, {
           x: travelX,
           ease: "none",
@@ -66,6 +69,19 @@ export default function AchievementsSection() {
             end: () => `+=${Math.abs(travelX)}`,
             pin: true,
             pinSpacing: true,
+            scrub: 1,
+            invalidateOnRefresh: true,
+          },
+        })
+
+        // Move background slower for parallax
+        gsap.to(bg, {
+          x: travelX * 0.1, // 0.9x relative speed to cards
+          ease: "none",
+          scrollTrigger: {
+            trigger: section,
+            start: "top top",
+            end: () => `+=${Math.abs(travelX)}`,
             scrub: 1,
             invalidateOnRefresh: true,
           },
@@ -92,16 +108,30 @@ export default function AchievementsSection() {
         width: "100%",
         height: "100vh",
         overflow: "hidden",
-        backgroundImage: "url(/images/achievements_bg.jpg)",
-        backgroundSize: "cover",
-        backgroundPosition: "center",
         borderTop: "2px solid white",
         display: "flex",
         flexDirection: "column",
         justifyContent: "center",
         alignItems: "center",
+        backgroundColor: "#c0c0c0",
       }}
     >
+      {/* Background with Parallax */}
+      <div
+        ref={bgRef}
+        style={{
+          position: "absolute",
+          top: 0,
+          left: 0,
+          width: "150vw", // wider to account for horizontal scroll movement
+          height: "100%",
+          backgroundImage: "url(/images/achievements_bg.jpg)",
+          backgroundSize: "cover",
+          backgroundPosition: "center",
+          zIndex: 0,
+        }}
+      />
+
       {/* ── Retro Title Bar ── */}
       <div
         style={{
@@ -195,21 +225,9 @@ export default function AchievementsSection() {
 
 /* ─── Card ──────────────────────────────────────────────── */
 function AchCard({ index, year, title, org, description, icon, type, total }) {
-  const cardRef = useRef(null)
-
-  const handleMouseEnter = () => {
-    gsap.to(cardRef.current, { scale: 1.05, duration: 0.25, ease: "power2.out" })
-  }
-  const handleMouseLeave = () => {
-    gsap.to(cardRef.current, { scale: 1, duration: 0.25, ease: "power2.in" })
-  }
-
   return (
     <div
-      ref={cardRef}
-      onMouseEnter={handleMouseEnter}
-      onMouseLeave={handleMouseLeave}
-      className="h-scroll-card"
+      className="h-scroll-card retro-interactive"
       style={{
         flexShrink: 0,
         width: CARD_W,
@@ -229,7 +247,7 @@ function AchCard({ index, year, title, org, description, icon, type, total }) {
       </div>
       <div style={{ display: "flex", gap: "0.75rem", alignItems: "center", marginBottom: "0.75rem" }}>
         <span style={{ fontSize: "1.8rem" }}>{icon}</span>
-        <h3 style={{ fontSize: "1rem", fontWeight: "bold", textTransform: "uppercase", fontFamily: "'Courier New', monospace" }}>
+        <h3 style={{ fontSize: "1rem", fontWeight: "bold", textTransform: "uppercase", fontFamily: "'Courier New', monospace", paddingTop: "4px" }}>
           {title}
         </h3>
       </div>

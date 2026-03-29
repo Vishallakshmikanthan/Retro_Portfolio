@@ -59,16 +59,22 @@ const RetroButton = ({
              justify-content: center;
              text-decoration: none;
              user-select: none;
-             transition: transform 0.1s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+             transition: transform 0.05s linear, box-shadow 0.05s linear;
              box-sizing: border-box;
           }
           
+          .retro-button:hover:not(:disabled) {
+             transform: translateY(-2px);
+             box-shadow: 1px 1px 0 #000;
+          }
+
           .retro-button:active:not(:disabled) {
              border-top: 2px solid #000000;
              border-left: 2px solid #000000;
              border-right: 2px solid #ffffff;
              border-bottom: 2px solid #ffffff;
-             transform: translate(2px, 2px); /* Authentic push effect */
+             transform: translateY(1px);
+             box-shadow: inset 1px 1px 0 #000;
           }
 
           .retro-button:disabled {

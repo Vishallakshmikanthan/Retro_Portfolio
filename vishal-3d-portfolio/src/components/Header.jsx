@@ -123,7 +123,7 @@ export default function Header() {
                             <a
                                 key={href}
                                 href={href}
-                                className={`nav-link ${active === id ? "nav-link--active" : ""}`}
+                                className={`nav-link retro-interactive ${active === id ? "nav-link--active" : ""}`}
                                 onClick={(e) => scrollTo(e, href)}
                             >
                                 {label}

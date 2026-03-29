@@ -464,3 +464,84 @@ button:active,
     justify-content: center;
   }
 }
+
+/* ──────────────────────────────────────────────
+   RETRO ANIMATIONS & MICRO-INTERACTIONS
+────────────────────────────────────────────── */
+
+/* Scroll Reveal */
+.reveal-initial {
+  opacity: 0;
+  transform: translateY(8px);
+  transition: opacity 0.2s linear, transform 0.2s linear;
+  will-change: opacity, transform;
+}
+
+.reveal-animate {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Micro-interactions (Hover/Active) */
+.retro-interactive {
+  transition: transform 0.05s linear, box-shadow 0.05s linear;
+  cursor: pointer;
+}
+
+.retro-interactive:hover {
+  transform: translateY(-2px);
+  box-shadow: 1px 1px 0 #000;
+}
+
+.retro-interactive:active {
+  transform: translateY(1px) !important;
+  box-shadow: inset 1px 1px 0 #000 !important;
+}
+
+/* Tooltip */
+.retro-tooltip-container {
+  position: relative;
+  display: inline-block;
+}
+
+.retro-tooltip {
+  position: absolute;
+  bottom: calc(100% + 4px);
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--white);
+  border: 1px solid var(--text);
+  color: var(--text);
+  padding: 4px 8px;
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 0.75rem;
+  font-weight: bold;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.1s linear;
+  z-index: 100;
+  box-shadow: 2px 2px 0 var(--text);
+}
+
+.retro-tooltip-container:hover .retro-tooltip {
+  opacity: 1;
+}
+
+/* Scan Overlay Sweep */
+@keyframes scan-sweep {
+  0% { top: 0; opacity: 0.2; }
+  80% { opacity: 0.2; }
+  100% { top: 100%; opacity: 0; }
+}
+
+.scan-overlay-sweep {
+  position: absolute;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  background: rgba(255, 255, 255, 0.4);
+  pointer-events: none;
+  z-index: 1000;
+  animation: scan-sweep 0.6s linear forwards;
+}

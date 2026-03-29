@@ -2,7 +2,7 @@ import PropTypes from 'prop-types';
 
 export default function RetroAlertWindow({ title, image, description, tech, github }) {
   return (
-    <div className="retro-window w-full bg-[#c0c0c0] border-t-2 border-l-2 border-white border-b-2 border-r-2 border-r-gray-dark border-b-gray-dark shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] flex flex-col font-mono text-black">
+    <div className="group retro-window w-full bg-[#c0c0c0] border-t-2 border-l-2 border-white border-b-2 border-r-2 border-r-gray-dark border-b-gray-dark shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] flex flex-col font-mono text-black transition-all duration-200">
       
       {/* Title Bar */}
       <div className="bg-[#000080] text-white px-2 py-1 flex justify-between items-center font-bold text-sm tracking-wider">
@@ -22,11 +22,11 @@ export default function RetroAlertWindow({ title, image, description, tech, gith
       <div className="p-4 flex flex-col items-center bg-[#c0c0c0] flex-grow">
         
         {/* ASCII / Graphic Box (Inset) */}
-        <div className="w-full h-48 bg-white border-t-2 border-l-2 border-gray-dark border-b-2 border-r-2 border-white mb-4 flex items-center justify-center p-2 overflow-hidden">
+        <div className="w-full h-48 bg-white border-t-2 border-l-2 border-gray-dark border-b-2 border-r-2 border-white mb-4 flex items-center justify-center p-2 relative overflow-hidden group-hover:bg-gray-200 transition-colors duration-200">
           <img 
             src={image} 
             alt={title} 
-            className="w-full h-full object-contain filter grayscale contrast-150" 
+            className="w-full h-full object-contain filter grayscale contrast-150 transition-all duration-200 group-hover:brightness-50" 
             style={{ imageRendering: 'pixelated' }}
           />
         </div>
@@ -53,13 +53,13 @@ export default function RetroAlertWindow({ title, image, description, tech, gith
         <div className="flex justify-center w-full gap-4 mt-auto">
           <button 
             onClick={() => window.open(github, '_blank')}
-            className="px-6 py-1 bg-[#c0c0c0] border-t-2 border-l-2 border-white border-b-2 border-r-2 border-black font-bold text-sm hover:scale-[0.98] active:border-t-black active:border-l-black active:border-b-white active:border-r-white break-keep whitespace-nowrap"
+            className="retro-interactive px-6 py-1 bg-[#c0c0c0] border-t-2 border-l-2 border-white border-b-2 border-r-2 border-black font-bold text-sm break-keep whitespace-nowrap group-hover:bg-[#000080] group-hover:text-white transition-colors duration-200"
           >
             Deploy!
           </button>
           <button 
             onClick={() => window.open(github, '_blank')}
-            className="px-6 py-1 bg-[#c0c0c0] border-t-2 border-l-2 border-white border-b-2 border-r-2 border-black font-bold text-sm hover:scale-[0.98] active:border-t-black active:border-l-black active:border-b-white active:border-r-white break-keep whitespace-nowrap"
+            className="retro-interactive px-6 py-1 bg-[#c0c0c0] border-t-2 border-l-2 border-white border-b-2 border-r-2 border-black font-bold text-sm break-keep whitespace-nowrap group-hover:bg-[#000080] group-hover:text-white transition-colors duration-200"
           >
             View Source
           </button>

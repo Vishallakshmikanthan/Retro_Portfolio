@@ -41,7 +41,7 @@ export default function ContactSection() {
   function handleSubmit(e) {
     e.preventDefault()
     setStatus("sending")
-    setTimeout(() => setStatus("sent"), 1400)
+    setTimeout(() => setStatus("sent"), 800)
   }
 
   return (
@@ -85,7 +85,7 @@ export default function ContactSection() {
           <div className="contact-animate retro-card bg-[#e0e0e0] border-2 border-gray-dark p-8 shadow-[6px_6px_0px_0px_rgba(0,0,0,1)]">
             {status === "sent" ? (
               <div className="text-center py-12">
-                <p className="text-2xl font-bold text-blue-900 mb-4">MESSAGE_SENT.SUCCESS</p>
+                <p className="text-2xl font-bold font-mono text-blue-900 mb-4">&gt; Message sent successfully.</p>
                 <RetroButton onClick={() => setStatus("idle")}>SEND_ANOTHER</RetroButton>
               </div>
             ) : (
@@ -104,8 +104,8 @@ export default function ContactSection() {
                   <label className="text-xs font-bold uppercase mb-2 block text-gray-700">Message:</label>
                   <textarea rows={5} className="retro-input w-full p-2 border-2 border-gray-dark bg-white font-mono resize-none" required />
                 </div>
-                <RetroButton type="submit" className="w-full py-4 uppercase">
-                  {status === "sending" ? "TRANSMITTING..." : "SEND_MESSAGE"}
+                <RetroButton type="submit" className="w-full py-4 uppercase" disabled={status === "sending"}>
+                  {status === "sending" ? "> Transmitting message..." : "SEND_MESSAGE"}
                 </RetroButton>
               </form>
             )}

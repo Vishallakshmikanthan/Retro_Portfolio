@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react"
 import gsap from "gsap"
 import { ScrollTrigger } from "gsap/ScrollTrigger"
+import ScanOverlay from "../components/ScanOverlay"
 
 gsap.registerPlugin(ScrollTrigger)
 
@@ -66,8 +67,8 @@ export default function SkillsSection() {
   const sectionRef = useRef(null)
   const [bootText, setBootText] = useState("")
   
-  const [cpuLoad, setCpuLoad] = useState("███░░ 65%")
-  const [memLoad, setMemLoad] = useState("████░ 78%")
+  const [cpuPercent, setCpuPercent] = useState(0)
+  const [memPercent, setMemPercent] = useState(0)
 
   useEffect(() => {
     const section = sectionRef.current
@@ -75,13 +76,13 @@ export default function SkillsSection() {
 
     gsap.fromTo(
       section.querySelectorAll(".module-card"),
-      { opacity: 0, y: 30 },
+      { opacity: 0, scale: 0.97 },
       {
         opacity: 1, 
-        y: 0, 
-        stagger: 0.15,
-        duration: 0.8,
-        ease: "power2.out",
+        scale: 1, 
+        stagger: 0.08,
+        duration: 0.2,
+        ease: "none",
         scrollTrigger: {
           trigger: section,
           start: "top 75%",
@@ -93,6 +94,11 @@ export default function SkillsSection() {
       trigger: section,
       start: "top 80%",
       onEnter: () => {
+        // Stats initial animation
+        setCpuPercent(65)
+        setMemPercent(78)
+
+        // Text typing animation
         const lines = [
           "> Initializing skill modules...",
           "> Loading dependencies...",
@@ -108,7 +114,7 @@ export default function SkillsSection() {
               textStr += lines[currentLine][currentChar]
               setBootText(textStr)
               currentChar++
-              setTimeout(typeChar, 30)
+              setTimeout(typeChar, 15) // 10-20ms per char
             } else {
               textStr += "\n"
               setBootText(textStr)
@@ -124,11 +130,16 @@ export default function SkillsSection() {
     })
 
     const interval = setInterval(() => {
-      const cpuVariations = ["███░░ 65%", "███▒░ 68%", "████░ 72%", "██▒░░ 54%", "███░░ 61%", "████░ 79%", "█████ 88%"]
-      const memVariations = ["████░ 78%", "████▒ 81%", "████░ 75%", "█████ 92%", "████░ 80%", "████░ 77%"]
-      setCpuLoad(cpuVariations[Math.floor(Math.random() * cpuVariations.length)])
-      setMemLoad(memVariations[Math.floor(Math.random() * memVariations.length)])
-    }, 1500)
+      // Step-like fluctuation (+/- 3-5%)
+      setCpuPercent(prev => {
+        const diff = Math.floor(Math.random() * 9) - 4; // -4 to +4
+        return Math.max(10, Math.min(95, prev + diff));
+      })
+      setMemPercent(prev => {
+        const diff = Math.floor(Math.random() * 9) - 4;
+        return Math.max(10, Math.min(95, prev + diff));
+      })
+    }, 4000) // 3-5 seconds fluctuation
 
     return () => clearInterval(interval)
   }, [])
@@ -150,17 +161,9 @@ export default function SkillsSection() {
         position: "relative"
       }}
     >
-      <div className="absolute inset-0 pointer-events-none opacity-[0.05]" style={{
-        backgroundImage: 'linear-gradient(rgba(255, 255, 255, 0.5) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, 0.5) 1px, transparent 1px)',
-        backgroundSize: '40px 40px',
-        animation: 'crtDrift 30s linear infinite'
-      }} />
+      <ScanOverlay />
 
       <style dangerouslySetInnerHTML={{__html: `
-        @keyframes crtDrift {
-          0% { background-position: 0 0; }
-          100% { background-position: 400px 400px; }
-        }
         @keyframes blink {
           0%, 100% { opacity: 1; }
           50% { opacity: 0; }
@@ -187,16 +190,6 @@ export default function SkillsSection() {
           border-color: #dfdfdf #404040 #404040 #dfdfdf;
           box-shadow: 1px 1px 0px 1px black;
         }
-        .module-card:hover {
-          transform: translateY(-2px);
-        }
-        .module-card:active {
-          border-color: #404040 #dfdfdf #dfdfdf #404040;
-        }
-        .module-card:focus-visible {
-          outline: 2px dashed black;
-          outline-offset: 2px;
-        }
         .win-title-bar {
           background: linear-gradient(90deg, #000080, #1084d0);
           color: white;
@@ -210,8 +203,9 @@ export default function SkillsSection() {
         .skill-chip {
           border: 2px solid;
           border-color: #dfdfdf #808080 #808080 #dfdfdf;
+          background-color: #c0c0c0;
           transition: all 0.1s;
-          cursor: default;
+          cursor: pointer;
           position: relative;
         }
         .skill-chip:active {
@@ -224,29 +218,6 @@ export default function SkillsSection() {
         .skill-chip:focus-visible {
           outline: 1px dotted black;
           outline-offset: -4px;
-        }
-        .skill-tooltip {
-          visibility: hidden;
-          background-color: #ffffe1;
-          color: black;
-          text-align: center;
-          padding: 4px 8px;
-          border: 1px solid black;
-          position: absolute;
-          z-index: 50;
-          bottom: 125%;
-          left: 50%;
-          transform: translateX(-50%);
-          opacity: 0;
-          transition: opacity 0.2s;
-          font-size: 0.75rem;
-          white-space: nowrap;
-          box-shadow: 2px 2px 0px rgba(0,0,0,0.2);
-          pointer-events: none;
-        }
-        .skill-chip:hover .skill-tooltip {
-          visibility: visible;
-          opacity: 1;
         }
       `}} />
 
@@ -272,10 +243,34 @@ export default function SkillsSection() {
               <span className="text-sm tracking-widest text-center md:hidden ">LOADED</span>
               <div className="h-px bg-[#00ff00] flex-1 max-w-[100px]"></div>
             </div>
-            <div className="flex flex-col md:flex-row justify-center gap-4 md:gap-8 mt-6 text-sm md:text-base border border-[#00ff00]/30 p-2 bg-[#002200]">
-              <div className="whitespace-pre">CPU: {cpuLoad}</div>
-              <div className="whitespace-pre">MEMORY: {memLoad}</div>
-              <div className="text-yellow-400">MODULES: ACTIVE</div>
+            
+            <div className="flex flex-col md:flex-row justify-center items-center gap-4 md:gap-8 mt-6 text-sm md:text-base border border-[#00ff00]/30 p-4 bg-[#002200]">
+              <div className="flex items-center gap-2">
+                <span>CPU:</span>
+                <div className="w-32 h-4 border border-[#00ff00] bg-black p-[1px]">
+                  <div 
+                    className="h-full bg-[#00ff00]" 
+                    style={{ 
+                      width: `${cpuPercent}%`, 
+                      transition: 'width 0.5s steps(4)' 
+                    }}
+                  ></div>
+                </div>
+                <span className="w-10 text-right">{cpuPercent}%</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <span>MEM:</span>
+                <div className="w-32 h-4 border border-[#00ff00] bg-black p-[1px]">
+                  <div 
+                    className="h-full bg-[#00ff00]" 
+                    style={{ 
+                      width: `${memPercent}%`, 
+                      transition: 'width 0.5s steps(4)' 
+                    }}
+                  ></div>
+                </div>
+                <span className="w-10 text-right">{memPercent}%</span>
+              </div>
             </div>
           </div>
         </div>
@@ -293,9 +288,9 @@ export default function SkillsSection() {
                   {category}
                 </span>
                 <div className="flex gap-1">
-                  <button className="w-5 h-5 bg-[#c0c0c0] border border-t-white border-l-white border-b-black border-r-black flex items-center justify-center text-black text-xs font-bold leading-none active:border-t-black active:border-l-black active:border-b-white active:border-r-white hover:bg-gray-200 focus:outline-none">_</button>
-                  <button className="w-5 h-5 bg-[#c0c0c0] border border-t-white border-l-white border-b-black border-r-black flex items-center justify-center text-black text-xs font-bold leading-none active:border-t-black active:border-l-black active:border-b-white active:border-r-white hover:bg-gray-200 focus:outline-none">□</button>
-                  <button className="w-5 h-5 bg-[#c0c0c0] border border-t-white border-l-white border-b-black border-r-black flex items-center justify-center text-black text-xs font-bold leading-none active:border-t-black active:border-l-black active:border-b-white active:border-r-white hover:bg-gray-200 focus:outline-none">×</button>
+                  <button className="w-5 h-5 bg-[#c0c0c0] border border-t-white border-l-white border-b-black border-r-black flex items-center justify-center text-black text-xs font-bold leading-none hover:bg-gray-200">_</button>
+                  <button className="w-5 h-5 bg-[#c0c0c0] border border-t-white border-l-white border-b-black border-r-black flex items-center justify-center text-black text-xs font-bold leading-none hover:bg-gray-200">□</button>
+                  <button className="w-5 h-5 bg-[#c0c0c0] border border-t-white border-l-white border-b-black border-r-black flex items-center justify-center text-black text-xs font-bold leading-none hover:bg-gray-200">×</button>
                 </div>
               </div>
               <div className="p-5 flex-1 border-t border-t-white border-l border-l-white">
@@ -303,11 +298,11 @@ export default function SkillsSection() {
                   {skills.map((skill) => (
                     <div
                       key={skill.name}
-                      className="skill-chip bg-[#c0c0c0] px-3 py-1 text-sm font-bold shadow-[1px_1px_rgba(0,0,0,0.2)]"
+                      className="skill-chip retro-interactive retro-tooltip-container px-3 py-1 text-sm font-bold"
                       tabIndex={0}
                     >
                       {skill.name}
-                      <span className="skill-tooltip leading-snug">{skill.desc}</span>
+                      <span className="retro-tooltip">{skill.desc}</span>
                     </div>
                   ))}
                 </div>
