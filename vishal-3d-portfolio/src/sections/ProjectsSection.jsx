@@ -64,6 +64,25 @@ export default function ProjectsSection() {
     >
       <ScanOverlay />
       
+      {/* SYSTEM METADATA */}
+      <div style={{
+        position: "absolute",
+        top: "40px",
+        right: "40px",
+        fontFamily: "monospace",
+        fontSize: "10px",
+        color: "#fff",
+        opacity: 0.4,
+        textAlign: "right",
+        pointerEvents: "none",
+        userSelect: "none",
+        zIndex: 10
+      }}>
+        PAGE_MEM: 1024KB<br/>
+        RENDER_MODE: HARDWARE<br/>
+        SYS_TICK: {activeIndex}
+      </div>
+
       <div className="section-container" style={{ width: "100%" }}>
         {/* Heading */}
         <RevealOnScroll delay={0}>

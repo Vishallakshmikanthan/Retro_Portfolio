@@ -173,6 +173,24 @@ export default function HeroSection() {
           <MediaPlayerFrame />
         </div>
 
+        {/* SYSTEM METADATA */}
+        <div style={{
+          position: "absolute",
+          bottom: "20px",
+          right: "40px",
+          fontFamily: "monospace",
+          fontSize: "10px",
+          color: "#000",
+          opacity: 0.6,
+          textAlign: "right",
+          pointerEvents: "none",
+          userSelect: "none"
+        }}>
+          SYS_STATUS: OPTIMAL<br/>
+          MEMORY_ADDR: 0x00FF<br/>
+          BUILD_VERSION: 1.0.42
+        </div>
+
       </div>
     </section>
   )

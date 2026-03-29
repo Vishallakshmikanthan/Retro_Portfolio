@@ -1,11 +1,18 @@
 import React, { useState, useEffect, useRef } from 'react';
 import gsap from 'gsap';
+import { soundManager } from '../utils/SoundManager';
 
 const Taskbar = () => {
     const [scrollPercent, setScrollPercent] = useState(0);
     const [windowCount, setWindowCount] = useState(0);
     const [currentTime, setCurrentTime] = useState(new Date());
+    const [isMuted, setIsMuted] = useState(soundManager.muted);
     const cpuBarRef = useRef(null);
+    const scrollObj = useRef({ val: 0 });
+
+    const toggleMute = () => {
+        setIsMuted(soundManager.toggleMute());
+    };
 
     useEffect(() => {
         const handleScroll = () => {
@@ -14,7 +21,16 @@ const Taskbar = () => {
             const st = 'scrollTop';
             const sh = 'scrollHeight';
             const percent = (h[st] || b[st]) / ((h[sh] || b[sh]) - h.clientHeight) * 100;
-            setScrollPercent(Math.round(percent));
+            const targetPercent = Math.round(percent) || 0;
+
+            gsap.to(scrollObj.current, {
+                val: targetPercent,
+                duration: 0.3,
+                ease: "power1.out",
+                onUpdate: () => {
+                    setScrollPercent(Math.round(scrollObj.current.val));
+                }
+            });
 
             // CPU BAR (FAKE): Animated bar (based on scroll)
             // Using transform scaleX for performance
@@ -55,8 +71,11 @@ const Taskbar = () => {
             window.removeEventListener('scroll', handleScroll);
             observer.disconnect();
             clearInterval(clockInterval);
+            gsap.killTweensOf(scrollObj.current);
         };
     }, []);
+
+    const isHighScroll = scrollPercent > 80;
 
     return (
         <div className="fixed bottom-0 left-0 w-full h-[32px] bg-[#c0c0c0] border-t-2 border-white shadow-[0_-1px_0_1px_#808080] flex items-center px-1 z-[1000] select-none font-mono">
@@ -75,10 +94,17 @@ const Taskbar = () => {
             {/* System tray / stats area */}
             <div className="flex items-center h-6 border-t-2 border-l-2 border-white bg-[#c0c0c0] shadow-[inset_-1px_-1px_0_1px_#808080] px-2 gap-4 text-[10px]">
                 
+                {/* SOUND TOGGLE */}
+                <button onClick={toggleMute} className="flex items-center gap-1 h-full px-2 border-r border-gray-600 active:translate-y-[1px]" title="Toggle Sound">
+                    <span className="text-[12px]">{isMuted ? '🔇' : '🔊'}</span>
+                </button>
+
                 {/* 1. SCROLL % */}
                 <div className="flex items-center gap-1 border-r border-gray-600 pr-2 h-full">
                     <span>SCROLL:</span>
-                    <span className="w-8 text-right">{scrollPercent}%</span>
+                    <span className={`w-8 text-right transition-colors duration-300 ${isHighScroll ? 'text-[#00ff22] font-bold shadow-[0_0_2px_#00ff22]' : 'text-black'}`}>
+                        {scrollPercent}%
+                    </span>
                 </div>
 
                 {/* 2. CPU BAR (FAKE) */}
@@ -100,7 +126,7 @@ const Taskbar = () => {
                 </div>
 
                 {/* Clock placeholder (Classic Win98) */}
-                <div className="ml-2 font-bold opacity-80 min-w-[70px] text-center">
+                <div className="ml-2 font-bold opacity-80 min-w-[70px] text-center text-black">
                     {currentTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' })}
                 </div>
             </div>

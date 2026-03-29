@@ -17,6 +17,7 @@ import Taskbar from "../components/Taskbar"
 import RetroBackground from "../components/backgrounds/RetroBackground"
 import AmbientIcons from "../components/AmbientIcons"
 import SystemMetrics from "../components/SystemMetrics"
+import SystemContextMsg from "../components/SystemContextMsg"
 import { useWindow } from "../context/WindowContext"
 
 gsap.registerPlugin(ScrollTrigger)
@@ -57,6 +58,36 @@ export default function BaseLayout() {
       )
     })
 
+    // Background Reactivity
+    gsap.to(".parallax-bg", {
+      y: "-2vh",
+      filter: "brightness(0.85)",
+      ease: "none",
+      scrollTrigger: {
+        trigger: document.documentElement,
+        start: "top top",
+        end: "bottom bottom",
+        scrub: true
+      }
+    })
+
+    // Depth Layering for active sections
+    const sections = document.querySelectorAll("section[id]")
+    sections.forEach(sec => {
+      gsap.set(sec, { opacity: 0.85, filter: "contrast(1)" })
+      gsap.to(sec, {
+        opacity: 1,
+        filter: "contrast(1.1)",
+        duration: 0.3,
+        scrollTrigger: {
+          trigger: sec,
+          start: "top center",
+          end: "bottom center",
+          toggleActions: "play reverse play reverse"
+        }
+      })
+    })
+
     return () => {
       window.removeEventListener("load", handleRefresh)
       window.removeEventListener("resize", handleRefresh)
@@ -69,6 +100,7 @@ export default function BaseLayout() {
     <>
       <RetroBackground />
       <AmbientIcons />
+      <SystemContextMsg />
       <SystemMetrics />
       <ProgressBar />
       <Header />

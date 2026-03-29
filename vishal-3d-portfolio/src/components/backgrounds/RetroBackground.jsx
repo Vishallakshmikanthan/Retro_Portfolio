@@ -54,7 +54,7 @@ const RetroBackground = () => {
   };
 
   return (
-    <div className="fixed inset-0 z-[-2] overflow-hidden pointer-events-none">
+    <div className="parallax-bg fixed -top-[2.5vh] -left-[2.5vw] w-[105vw] h-[105vh] z-[-2] overflow-hidden pointer-events-none">
       {/* Previous Background (Fading Out) */}
       {previousStyle && (
         <div 

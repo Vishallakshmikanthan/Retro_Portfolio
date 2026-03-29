@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from "react"
+import { soundManager } from "../utils/SoundManager"
 
-const INTERACTIVE_SELECTOR = "a, button, .project-card, [data-project-card], .magnetic"
+const INTERACTIVE_SELECTOR = "a, button, .project-card, [data-project-card], .magnetic, .retro-interactive"
 
 const clamp = (value, min, max) => Math.min(Math.max(value, min), max)
 
@@ -14,6 +15,7 @@ export default function CustomCursor() {
   const magneticRefs = useRef([])
   const [enabled, setEnabled] = useState(false)
   const [isHoveringInteractive, setIsHoveringInteractive] = useState(false)
+  const [isClicking, setIsClicking] = useState(false)
 
   useEffect(() => {
     const finePointer = window.matchMedia("(pointer:fine)").matches
@@ -24,7 +26,8 @@ export default function CustomCursor() {
     styleEl.setAttribute("data-custom-cursor", "true")
     styleEl.textContent = `
       @media (pointer:fine) {
-        html, body, body * { cursor: none !important; }
+        body:not(.cursor-loading), body:not(.cursor-loading) * { cursor: none !important; }
+        .cursor-loading, .cursor-loading * { cursor: wait !important; }
       }
     `
     document.head.appendChild(styleEl)
@@ -33,6 +36,11 @@ export default function CustomCursor() {
       styleEl.remove()
     }
   }, [])
+
+  useEffect(() => {
+    if (isClicking) document.body.classList.add("cursor-loading")
+    else document.body.classList.remove("cursor-loading")
+  }, [isClicking])
 
   useEffect(() => {
     if (!enabled) return
@@ -83,6 +91,11 @@ export default function CustomCursor() {
       const interactive = event.target.closest(INTERACTIVE_SELECTOR)
       if (interactive) {
         scaleTargetRef.current = 2
+        
+        // Ensure we only play sound if we weren't already hovering
+        if (scaleTargetRef.current === 1 || !setIsHoveringInteractive) {
+           soundManager.playHover()
+        }
         setIsHoveringInteractive(true)
       }
     }
@@ -96,6 +109,14 @@ export default function CustomCursor() {
 
       scaleTargetRef.current = 1
       setIsHoveringInteractive(false)
+    }
+
+    const onMouseDown = (event) => {
+      if (event.target.closest(INTERACTIVE_SELECTOR)) {
+        soundManager.playClick()
+      }
+      setIsClicking(true)
+      setTimeout(() => setIsClicking(false), 150)
     }
 
     const tick = () => {
@@ -120,6 +141,7 @@ export default function CustomCursor() {
     window.addEventListener("mousemove", onMouseMove, { passive: true })
     window.addEventListener("pointerover", onPointerOver)
     window.addEventListener("pointerout", onPointerOut)
+    window.addEventListener("mousedown", onMouseDown)
     window.addEventListener("resize", updateMagneticRects, { passive: true })
     window.addEventListener("scroll", updateMagneticRects, { passive: true })
 
@@ -130,6 +152,7 @@ export default function CustomCursor() {
       window.removeEventListener("mousemove", onMouseMove)
       window.removeEventListener("pointerover", onPointerOver)
       window.removeEventListener("pointerout", onPointerOut)
+      window.removeEventListener("mousedown", onMouseDown)
       window.removeEventListener("resize", updateMagneticRects)
       window.removeEventListener("scroll", updateMagneticRects)
 
@@ -146,11 +169,11 @@ export default function CustomCursor() {
     <div
       ref={cursorRef}
       aria-hidden="true"
-      className={`pointer-events-none fixed left-0 top-0 z-[999999] h-[18px] w-[18px] rounded-full border-2 transition-[border-color,box-shadow] duration-200 will-change-transform ${
+      className={`pointer-events-none fixed left-0 top-0 z-[999999] h-[18px] w-[18px] rounded-full border-2 transition-[border-color,box-shadow,opacity] duration-200 will-change-transform ${
         isHoveringInteractive
           ? "border-purple-400 shadow-[0_0_12px_rgba(168,85,247,0.55)]"
           : "border-cyan-300 shadow-[0_0_8px_rgba(34,211,238,0.35)]"
-      }`}
+      } ${isClicking ? "opacity-0" : "opacity-100"}`}
       style={{ transform: "translate3d(-100px,-100px,0) scale(1)" }}
     />
   )
