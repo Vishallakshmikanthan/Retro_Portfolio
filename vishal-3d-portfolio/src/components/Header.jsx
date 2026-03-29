@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react"
 import gsap from "gsap"
 import { ScrollTrigger } from "gsap/ScrollTrigger"
 import RetroButton from "./RetroButton"
+import { useSystemHUD } from "../context/SystemHUDContext"
 
 gsap.registerPlugin(ScrollTrigger)
 
@@ -34,6 +35,13 @@ export default function Header() {
     const headerRef = useRef(null)
     const [menuOpen, setMenuOpen] = useState(false)
     const [active, setActive] = useState("hero")
+    
+    const { enableDeveloperMode, setIsExplorerOpen, dispatchMessage } = useSystemHUD()
+    const [logoClicks, setLogoClicks] = useState(0)
+
+    useEffect(() => {
+        document.title = `Vishal.exe - [${active.toUpperCase()}]`
+    }, [active])
 
     useEffect(() => {
         const header = headerRef.current
@@ -41,6 +49,15 @@ export default function Header() {
         
         // Entrance animation
         gsap.fromTo(header, { opacity: 0 }, { opacity: 1, duration: 0.5, delay: 0.2 })
+
+        // 2. Progressive Reveal for Links
+        const links = header.querySelectorAll('.nav-link, .logo-monogram, .logo-name')
+        if (links.length) {
+            gsap.fromTo(links, 
+                { opacity: 0, y: 5 }, 
+                { opacity: 1, y: 0, duration: 0.3, stagger: 0.05, delay: 0.3 }
+            )
+        }
 
         // 3. HEADER SHRINK: Navbar reduces size on scroll
         const inner = header.querySelector('.header-inner')
@@ -99,8 +116,11 @@ export default function Header() {
         setMenuOpen(false)
         const target = document.querySelector(href)
         if (target) {
-            target.scrollIntoView({ behavior: "instant", block: "start" })
-            setActive(href.replace("#", ""))
+            // Add slight 100ms delay to give tactile feedback of click down
+            setTimeout(() => {
+                target.scrollIntoView({ behavior: "instant", block: "start" })
+                setActive(href.replace("#", ""))
+            }, 100);
         }
     }
 
@@ -110,7 +130,17 @@ export default function Header() {
                 <a
                     href="#hero"
                     className="header-logo"
-                    onClick={(e) => scrollTo(e, "#hero")}
+                    onClick={(e) => {
+                        scrollTo(e, "#hero");
+                        setLogoClicks(c => {
+                            const newC = c + 1;
+                            if (newC === 5) {
+                                enableDeveloperMode();
+                                return 0;
+                            }
+                            return newC;
+                        });
+                    }}
                 >
                     <span className="logo-monogram">VL</span>
                     <span className="logo-name">Vishal<span className="logo-dot">.</span>exe</span>
@@ -158,9 +188,21 @@ export default function Header() {
                         href="/resume.pdf" 
                         download 
                         className="hidden sm:flex"
+                        hoverLabel="OPEN_FILE.PDF"
+                        onClickLabel="Opening RESUME.PDF..."
                     >
                         RESUME.PDF
                     </RetroButton>
+
+                    <button 
+                        onClick={() => {
+                            dispatchMessage("> Initializing SYSTEM_EXPLORER.EXE...");
+                            setIsExplorerOpen(true);
+                        }}
+                        className="hidden md:flex items-center justify-center bg-[#c0c0c0] text-black border-t-2 border-l-2 border-white border-b-2 border-r-2 border-[#808080] px-3 py-1 font-bold text-xs hover:bg-[#e0e0e0] active:border-t-[#808080] active:border-l-[#808080] active:border-b-white active:border-r-white"
+                    >
+                        <span className="mr-2">📁</span>EXPLORER
+                    </button>
 
                     <button
                         className="hamburger md:hidden"

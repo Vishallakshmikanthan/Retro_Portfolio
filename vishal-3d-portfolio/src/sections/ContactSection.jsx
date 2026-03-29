@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react"
 import gsap from "gsap"
 import { ScrollTrigger } from "gsap/ScrollTrigger"
 import RetroButton from "../components/RetroButton"
+import { useSystemHUD } from "../context/SystemHUDContext"
 
 gsap.registerPlugin(ScrollTrigger)
 
@@ -21,6 +22,16 @@ const socials = [
 export default function ContactSection() {
   const sectionRef = useRef(null)
   const [status, setStatus] = useState("idle")
+  const { dispatchMessage } = useSystemHUD()
+
+  const handleCopy = (e, text, label) => {
+    e.preventDefault()
+    navigator.clipboard.writeText(text)
+    dispatchMessage(`> ${label} copied to clipboard`, 1500)
+    if (text.startsWith('http')) {
+        setTimeout(() => window.open(text, '_blank'), 300)
+    }
+  }
 
   useEffect(() => {
     const section = sectionRef.current
@@ -115,8 +126,12 @@ export default function ContactSection() {
           <aside className="contact-animate space-y-8 lg:pl-8">
             <div className="retro-card border-2 border-gray-dark bg-white p-6 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
               <p className="text-xs font-bold uppercase opacity-50 mb-2">Primary_Email:</p>
-              <a href="mailto:vishallakshmikanthan@gmail.com" className="text-xl font-bold text-blue-900 hover:underline break-all">
-                vishallakshmikanthan@gmail.com
+              <a 
+                href="mailto:vishallakshmikanthan777@gmail.com" 
+                className="text-xl font-bold text-blue-900 hover:underline break-all"
+                onClick={(e) => handleCopy(e, "vishallakshmikanthan777@gmail.com", "Email")}
+              >
+                vishallakshmikanthan777@gmail.com
               </a>
             </div>
 
@@ -127,9 +142,8 @@ export default function ContactSection() {
                   <a
                     key={label}
                     href={href}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="flex items-center gap-4 group"
+                    onClick={(e) => handleCopy(e, href, label)}
+                    className="flex items-center gap-4 group cursor-pointer"
                   >
                     <span className="w-12 h-12 flex items-center justify-center bg-blue-900 text-white font-bold border-2 border-black group-hover:bg-blue-700">
                       {icon}

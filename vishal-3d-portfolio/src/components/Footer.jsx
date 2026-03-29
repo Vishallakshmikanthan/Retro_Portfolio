@@ -17,52 +17,21 @@ export default function Footer() {
     }
 
     return (
-        <footer className="site-footer bg-[#c0c0c0] border-t-4 border-black py-12">
-            <div className="section-container">
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-12 text-black font-mono">
-                    
-                    {/* Brand */}
-                    <div className="space-y-4">
-                        <span className="bg-blue-900 text-white p-2 font-black text-xl">VL</span>
-                        <p className="text-sm leading-relaxed uppercase">
-                            BE COMPUTER SCIENCE<br />
-                            SAIRAM ENGINEERING COLLEGE<br />
-                            CGPA 9.13 · BATCH 2028
-                        </p>
-                    </div>
-
-                    {/* Links */}
-                    <div className="space-y-4">
-                        <p className="font-bold border-b border-black pb-1">SYSTEM_LINKS</p>
-                        <nav className="flex flex-col gap-2">
-                            {quickLinks.map(({ label, href }) => (
-                                <a
-                                    key={label}
-                                    href={href}
-                                    className="hover:bg-blue-900 hover:text-white px-1 w-fit"
-                                    onClick={(e) => scrollTo(e, href)}
-                                >
-                                    {label}.EXE
-                                </a>
-                            ))}
-                        </nav>
-                    </div>
-
-                    {/* Network */}
-                    <div className="space-y-4">
-                        <p className="font-bold border-b border-black pb-1">NETWORK_STATUS</p>
-                        <div className="flex flex-col gap-2">
-                            <a href="mailto:vishallakshmikanthan@gmail.com" className="hover:underline">EMAIL_ADMIN</a>
-                            <a href="https://github.com/Vishallakshmikanthan" target="_blank" rel="noopener noreferrer" className="hover:underline">GITHUB_REPO</a>
-                            <a href="https://www.linkedin.com/in/vishallakshmikanthan/" target="_blank" rel="noopener noreferrer" className="hover:underline">LINKEDIN_PROFILE</a>
-                        </div>
-                    </div>
-
+        <footer className="site-footer bg-[#c0c0c0] border-t-2 border-white py-4 font-mono">
+            <div className="section-container flex flex-col md:flex-row justify-between items-center opacity-80 text-xs text-black border-t border-b border-black py-2 px-4 shadow-[inset_1px_1px_0px_0px_#808080]">
+                <div>SYS STATUS: <span className="text-[#000080] font-bold">ONLINE</span></div>
+                <div className="hidden md:block text-[#808080]">|</div>
+                <div>BUILD VERSION: V98.0.1</div>
+                <div className="hidden md:block text-[#808080]">|</div>
+                <div>YEAR: 2026</div>
+                <div className="hidden md:block text-[#808080]">|</div>
+                <div className="flex gap-4">
+                    <a href="https://github.com/Vishallakshmikanthan" target="_blank" rel="noopener noreferrer" className="hover:underline hover:text-[#000080]">GITHUB</a>
+                    <a href="https://www.linkedin.com/in/vishallakshmikanthan/" target="_blank" rel="noopener noreferrer" className="hover:underline hover:text-[#000080]">LINKEDIN</a>
                 </div>
-
-                <div className="mt-12 pt-6 border-t border-gray-500 text-center text-xs opacity-60">
-                    <p>© 2026 VISHAL LAKSHMIKANTHAN. BUILT FOR STABILITY. V98.0.1</p>
-                </div>
+            </div>
+            <div className="text-center mt-2 text-[10px] opacity-50">
+                VISHAL LAKSHMIKANTHAN. BUILT FOR STABILITY.
             </div>
         </footer>
     )

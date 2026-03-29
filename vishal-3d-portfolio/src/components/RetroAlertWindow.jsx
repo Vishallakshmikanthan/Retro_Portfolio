@@ -22,13 +22,19 @@ export default function RetroAlertWindow({ title, image, description, tech, gith
       <div className="p-4 flex flex-col items-center bg-[#c0c0c0] flex-grow">
         
         {/* ASCII / Graphic Box (Inset) */}
-        <div className="w-full h-48 bg-white border-t-2 border-l-2 border-gray-dark border-b-2 border-r-2 border-white mb-4 flex items-center justify-center p-2 relative overflow-hidden group-hover:bg-gray-200 transition-colors duration-200">
+        <div className="w-full h-48 bg-gray-600 border-t-2 border-l-2 border-gray-dark border-b-2 border-r-2 border-white mb-4 flex items-center justify-center p-2 relative overflow-hidden transition-colors duration-200 group-hover:bg-gray-800">
           <img 
             src={image} 
             alt={title} 
-            className="w-full h-full object-contain filter grayscale contrast-150 transition-all duration-200 group-hover:brightness-50" 
+            className="w-full h-full object-contain filter grayscale contrast-150 transition-all duration-200 group-hover:brightness-[0.25] fade-in-image" 
             style={{ imageRendering: 'pixelated' }}
+            onLoad={(e) => e.target.classList.remove('fade-in-image')}
           />
+          {/* Hover Overlay */}
+          <div className="absolute inset-0 flex flex-col justify-center items-center text-white opacity-0 group-hover:opacity-100 transition-opacity duration-150 pointer-events-none drop-shadow-[1px_1px_2px_rgba(0,0,0,0.8)]">
+            <span className="font-bold text-lg border-b-2 border-white mb-2">STATUS: ACTIVE</span>
+            <span className="text-xs px-4 text-center tracking-widest">{tech.slice(0, 3).join(' / ')}</span>
+          </div>
         </div>
 
         {/* Content Area */}
@@ -52,13 +58,21 @@ export default function RetroAlertWindow({ title, image, description, tech, gith
         {/* Buttons Row */}
         <div className="flex justify-center w-full gap-4 mt-auto">
           <button 
-            onClick={() => window.open(github, '_blank')}
+            onClick={() => {
+              setTimeout(() => {
+                window.open(github, '_blank', 'noopener,noreferrer');
+              }, 100);
+            }}
             className="retro-interactive px-6 py-1 bg-[#c0c0c0] border-t-2 border-l-2 border-white border-b-2 border-r-2 border-black font-bold text-sm break-keep whitespace-nowrap group-hover:bg-[#000080] group-hover:text-white transition-colors duration-200"
           >
             Deploy!
           </button>
           <button 
-            onClick={() => window.open(github, '_blank')}
+            onClick={() => {
+              setTimeout(() => {
+                window.open(github, '_blank', 'noopener,noreferrer');
+              }, 100);
+            }}
             className="retro-interactive px-6 py-1 bg-[#c0c0c0] border-t-2 border-l-2 border-white border-b-2 border-r-2 border-black font-bold text-sm break-keep whitespace-nowrap group-hover:bg-[#000080] group-hover:text-white transition-colors duration-200"
           >
             View Source

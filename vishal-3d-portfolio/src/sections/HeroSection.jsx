@@ -134,10 +134,10 @@ export default function HeroSection() {
 
           {/* BUTTONS */}
           <div style={{ display: "flex", gap: "16px", marginBottom: "32px" }}>
-            <RetroButton onClick={() => scrollTo("projects")} className="px-6 py-2 text-sm">
+            <RetroButton onClick={() => scrollTo("projects")} className="px-6 py-2 text-sm" hoverLabel="EXECUTE.EXE">
               EXPLORE_WORK.EXE
             </RetroButton>
-            <RetroButton href={`/resume.pdf?v=${Date.now()}`} download className="px-6 py-2 text-sm">
+            <RetroButton href={`/resume.pdf?v=${Date.now()}`} download className="px-6 py-2 text-sm" hoverLabel="OPEN_FILE.PDF" onClickLabel="Opening RESUME.PDF...">
               RESUME.PDF
             </RetroButton>
           </div>

@@ -208,16 +208,31 @@ export default function SkillsSection() {
           cursor: pointer;
           position: relative;
         }
+        .skill-chip::after {
+          content: '';
+          position: absolute;
+          bottom: 2px;
+          left: 50%;
+          width: 0;
+          height: 3px;
+          background: #00ff22;
+          transition: width 0.15s ease-out;
+          transform: translateX(-50%);
+          pointer-events: none;
+        }
         .skill-chip:active {
           border-color: #808080 #dfdfdf #dfdfdf #808080;
+        }
+        .skill-chip:focus-visible {
+          outline: 1px dotted black;
+          outline-offset: -4px;
         }
         .skill-chip:hover {
           background-color: #000080 !important;
           color: white !important;
         }
-        .skill-chip:focus-visible {
-          outline: 1px dotted black;
-          outline-offset: -4px;
+        .skill-chip:hover::after {
+          width: calc(100% - 16px);
         }
       `}} />
 

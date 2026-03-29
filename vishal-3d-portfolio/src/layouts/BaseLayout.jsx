@@ -18,6 +18,7 @@ import RetroBackground from "../components/backgrounds/RetroBackground"
 import AmbientIcons from "../components/AmbientIcons"
 import SystemMetrics from "../components/SystemMetrics"
 import SystemContextMsg from "../components/SystemContextMsg"
+import MicroEventsManager from "../components/MicroEventsManager"
 import { useWindow } from "../context/WindowContext"
 
 gsap.registerPlugin(ScrollTrigger)
@@ -71,9 +72,21 @@ export default function BaseLayout() {
       }
     })
 
+    // Focus Mode Lite listeners
+    const handleMouseEnter = () => gsap.to(".parallax-bg", { opacity: 0.95, duration: 0.3 })
+    const handleMouseLeave = () => gsap.to(".parallax-bg", { opacity: 1, duration: 0.3 })
+
+    // Section Transition Feedback flash
+    const flashMain = () => {
+      if (mainRef.current) gsap.fromTo(mainRef.current, { opacity: 0.95 }, { opacity: 1, duration: 0.12, ease: "none" })
+    }
+
     // Depth Layering for active sections
     const sections = document.querySelectorAll("section[id]")
     sections.forEach(sec => {
+      sec.addEventListener('mouseenter', handleMouseEnter)
+      sec.addEventListener('mouseleave', handleMouseLeave)
+
       gsap.set(sec, { opacity: 0.85, filter: "contrast(1)" })
       gsap.to(sec, {
         opacity: 1,
@@ -83,7 +96,11 @@ export default function BaseLayout() {
           trigger: sec,
           start: "top center",
           end: "bottom center",
-          toggleActions: "play reverse play reverse"
+          toggleActions: "play reverse play reverse",
+          onEnter: () => { sec.classList.add("active-section"); flashMain(); },
+          onLeave: () => sec.classList.remove("active-section"),
+          onEnterBack: () => { sec.classList.add("active-section"); flashMain(); },
+          onLeaveBack: () => sec.classList.remove("active-section")
         }
       })
     })
@@ -93,6 +110,10 @@ export default function BaseLayout() {
       window.removeEventListener("resize", handleRefresh)
       timers.forEach(clearTimeout)
       ScrollTrigger.getAll().forEach(st => st.kill())
+      sections.forEach(sec => {
+        sec.removeEventListener('mouseenter', handleMouseEnter)
+        sec.removeEventListener('mouseleave', handleMouseLeave)
+      })
     }
   }, [])
 
@@ -101,6 +122,7 @@ export default function BaseLayout() {
       <RetroBackground />
       <AmbientIcons />
       <SystemContextMsg />
+      <MicroEventsManager />
       <SystemMetrics />
       <ProgressBar />
       <Header />

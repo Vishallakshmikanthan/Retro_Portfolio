@@ -69,6 +69,10 @@ html, body {
   font-family: 'Courier New', Courier, monospace;
   overflow-x: hidden;
   margin: 0;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  line-height: 1.35;
 }
 
 /* Force override for ALL gradients (KEEP THIS) */
@@ -112,6 +116,7 @@ section {
   border-bottom: 2px solid var(--gray-dark);
   position: relative;
   overflow: hidden;
+  scroll-margin-top: 80px; /* Enhanced scroll guidance */
 }
 
 /* ──────────────────────────────────────────────
@@ -165,6 +170,18 @@ section {
   margin-bottom: 1rem;
 }
 
+.section-header {
+  position: sticky;
+  top: 80px; /* Offset to clear main locked nav */
+  z-index: 40;
+  transition: background-color 0.2s ease;
+}
+
+.section-header:not(:hover) {
+  /* Subtle stuck background hint */
+  background-color: rgba(0, 0, 0, 0.45) !important;
+}
+
 .section-container {
   max-width: 1100px;
   width: 90%;
@@ -207,9 +224,20 @@ section {
   padding: 0.5rem 1rem;
 }
 
-.nav-link:hover, .nav-link--active {
+.nav-link:hover {
   background: var(--primary);
   color: #fff;
+}
+
+.nav-link--active {
+  background: #000040;
+  color: #fff;
+  font-weight: 900;
+  border: 1px dotted #fff;
+}
+
+.active-section .retro-heading {
+  border-bottom: 4px solid currentColor;
 }
 
 /* ──────────────────────────────────────────────
@@ -217,8 +245,11 @@ section {
 ────────────────────────────────────────────── */
 .retro-card {
   background: var(--white) !important;
-  border: 2px solid var(--text) !important;
+  /* Darker outer, lighter inner tone variation for depth */
+  border: 2px solid;
+  border-color: #dfdfdf #404040 #404040 #dfdfdf !important;
   position: relative;
+  will-change: transform;
 }
 
 .skill-badge {
@@ -339,10 +370,35 @@ button:active,
   flex-shrink: 0;
   scroll-snap-align: center;
   transition: transform 0.3s ease, opacity 0.3s ease;
+  will-change: transform;
 }
 
 .h-scroll-card:hover {
   transform: scale(1.05) !important;
+}
+
+/* Edge Scroll Indicators (Top/Bottom OR Left/Right fading) */
+.edge-scroll-fade-h {
+  position: relative;
+}
+.edge-scroll-fade-h::before,
+.edge-scroll-fade-h::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 30px;
+  pointer-events: none;
+  z-index: 10;
+  opacity: 0.15;
+}
+.edge-scroll-fade-h::before {
+  left: 0;
+  background: linear-gradient(to right, #000000, transparent);
+}
+.edge-scroll-fade-h::after {
+  right: 0;
+  background: linear-gradient(to left, #000000, transparent);
 }
 
 /* Windows 98 style scrollbar */
@@ -486,6 +542,7 @@ button:active,
 .retro-interactive {
   transition: transform 0.05s linear, box-shadow 0.05s linear;
   cursor: pointer;
+  will-change: transform;
 }
 
 .retro-interactive:hover {
@@ -496,6 +553,17 @@ button:active,
 .retro-interactive:active {
   transform: translateY(1px) !important;
   box-shadow: inset 1px 1px 0 #000 !important;
+}
+
+/* Image fading enhancement */
+.fade-in-image {
+  opacity: 0;
+  animation: fadeInImage 0.2s ease-in forwards;
+  background-color: var(--gray-dark); /* Placeholder while loading */
+}
+@keyframes fadeInImage {
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 
 /* Tooltip */
@@ -544,4 +612,35 @@ button:active,
   pointer-events: none;
   z-index: 1000;
   animation: scan-sweep 0.6s linear forwards;
+}
+
+/* ──────────────────────────────────────────────
+   HUD System Utilities Added 
+────────────────────────────────────────────── */
+.performance-mode * {
+  animation-duration: 0.9s !important;
+  transition-duration: 0.9s !important;
+}
+
+.scroll-velocity-active .window-main,
+.scroll-velocity-active .window-secondary {
+  transform: translateY(2px) scale(0.99) !important;
+  opacity: 0.95 !important;
+  transition: transform 0.1s linear, opacity 0.1s linear !important;
+}
+
+.idle-flicker {
+  animation: idle-flicker-anim 4s infinite !important;
+}
+
+@keyframes idle-flicker-anim {
+  0% { opacity: 1; filter: none; }
+  98% { opacity: 1; filter: none; }
+  99% { opacity: 0.95; filter: contrast(1.1); }
+  100% { opacity: 1; filter: none; }
+}
+
+.auto-focus-highlight {
+  box-shadow: 0 0 0 2px var(--primary) !important;
+  transition: box-shadow 0.2s linear;
 }

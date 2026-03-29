@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useWindow } from '../context/WindowContext';
+import { useSystemHUD } from '../context/SystemHUDContext';
 
 /**
  * RetroButton Component
@@ -13,6 +14,8 @@ import { useWindow } from '../context/WindowContext';
  * - type: HTML button type
  * - className: Additional CSS classes
  * - disabled: Boolean for disabled state
+ * - hoverLabel: Text to display on hover
+ * - onClickLabel: Text to display on click before action (simulates delay)
  */
 const RetroButton = ({ 
   children, 
@@ -21,23 +24,68 @@ const RetroButton = ({
   download, 
   type = 'button', 
   className = '', 
-  disabled = false 
+  disabled = false,
+  hoverLabel,
+  onClickLabel
 }) => {
   const { playSound } = useWindow();
-  const isLink = !!href;
-  const Component = isLink ? 'a' : 'button';
-  const props = isLink 
-    ? { href, download, target: "_blank", rel: "noopener noreferrer", onClick: playSound } 
-    : { onClick: (e) => { playSound(); if(onClick) onClick(e); }, type, disabled };
+  const { dispatchMessage } = useSystemHUD();
+  const [isHovered, setIsHovered] = useState(false);
+  const [isPending, setIsPending] = useState(false);
+
+  const displayContent = isPending && onClickLabel 
+    ? onClickLabel 
+    : (isHovered && hoverLabel ? hoverLabel : children);
+
+  const handleClick = (e) => {
+    playSound();
+    dispatchMessage(onClickLabel ? `> ${onClickLabel}` : "> Executing...", 2000);
+    if (onClickLabel && href) {
+        e.preventDefault();
+        setIsPending(true);
+        setTimeout(() => {
+            setIsPending(false);
+            const a = document.createElement('a');
+            a.href = href;
+            if (download) a.download = download === true ? '' : download;
+            a.target = '_blank';
+            a.rel = 'noopener noreferrer';
+            a.click();
+        }, 400);
+    } else {
+        if (href) {
+            // For regular links without intercept, just brief delay
+            e.preventDefault();
+            setTimeout(() => {
+                const a = document.createElement('a');
+                a.href = href;
+                if (download) a.download = download === true ? '' : download;
+                a.target = '_blank';
+                a.rel = 'noopener noreferrer';
+                a.click();
+            }, 100);
+        } else if (onClick) {
+            // Delay action slightly for tactile feedback
+            e.preventDefault();
+            setTimeout(() => onClick(e), 80);
+        }
+    }
+  };
+
+  const isLink = !!href && !onClickLabel; // If intercepting, use button to prevent initial nav
+  const Component = 'button'; // Force button to allow synthetic delay handling
+  const props = { onClick: handleClick, type, disabled };
 
   return (
     <Component
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
       {...props}
       className={`retro-button ${className}`}
       style={styles.button}
     >
       <span className="retro-button-content" style={styles.content}>
-        {children}
+        {displayContent}
       </span>
 
       <style>
