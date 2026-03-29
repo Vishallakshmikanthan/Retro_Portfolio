@@ -1,6 +1,9 @@
 import { useEffect, useRef, useState } from "react"
 import gsap from "gsap"
+import { ScrollTrigger } from "gsap/ScrollTrigger"
 import RetroButton from "./RetroButton"
+
+gsap.registerPlugin(ScrollTrigger)
 
 const navLinks = [
     { label: "Home", href: "#hero" },
@@ -35,7 +38,60 @@ export default function Header() {
     useEffect(() => {
         const header = headerRef.current
         if (!header) return
+        
+        // Entrance animation
         gsap.fromTo(header, { opacity: 0 }, { opacity: 1, duration: 0.5, delay: 0.2 })
+
+        // 3. HEADER SHRINK: Navbar reduces size on scroll
+        const inner = header.querySelector('.header-inner')
+        const logo = header.querySelector('.logo-monogram')
+
+        const ctx = gsap.context(() => {
+            gsap.to(inner, {
+                paddingTop: "0.25rem",
+                paddingBottom: "0.25rem",
+                ease: "none",
+                scrollTrigger: {
+                    trigger: document.body,
+                    start: "top top",
+                    end: "100px top", // Shrinks within first 100px of scroll
+                    scrub: true
+                }
+            })
+
+            if (logo) {
+                gsap.to(logo, {
+                    scale: 0.85,
+                    ease: "none",
+                    scrollTrigger: {
+                        trigger: document.body,
+                        start: "top top",
+                        end: "100px top",
+                        scrub: true
+                    }
+                })
+            }
+
+            // Scroll-spy for nav links
+            const sectionIds = ["hero", "about", "skills", "projects", "milestones", "contact"];
+            sectionIds.forEach((id) => {
+                const triggerEl = document.getElementById(id);
+                if (triggerEl) {
+                    ScrollTrigger.create({
+                        trigger: triggerEl,
+                        start: "top center",
+                        end: "bottom center",
+                        onToggle: (self) => {
+                            if (self.isActive) {
+                                setActive(id);
+                            }
+                        }
+                    });
+                }
+            });
+        })
+
+        return () => ctx.revert()
     }, [])
 
     const scrollTo = (e, href) => {

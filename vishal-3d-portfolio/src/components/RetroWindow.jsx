@@ -1,17 +1,42 @@
 import React from 'react';
+import { useWindow } from '../context/WindowContext';
 
 /**
  * RetroWindow Component
  * A Windows 98 / XP inspired UI wrapper for portfolio sections.
  */
-const RetroWindow = ({ title, children, className = "" }) => {
+const RetroWindow = ({ title, children, className = "", style = {}, onClick, id }) => {
+  const { activeWindow } = useWindow();
+  const isActive = activeWindow === title;
+
   return (
-    <div className={`retro-window-container ${className}`} style={styles.container}>
+    <div 
+      id={id}
+      className={`retro-window-container retro-window ${className}`} 
+      style={{ ...styles.container, ...style }}
+      onClick={onClick}
+      data-active={isActive ? "true" : "false"}
+    >
       <style>
         {`
           .retro-window-container {
              box-sizing: border-box;
+             transition: box-shadow 0.2s ease, transform 0.3s ease;
           }
+          .retro-window-container:hover {
+             /* Handled by 3D depth hook and index.css hover rules */
+          }
+          /* Visual cue for the "Active" window */
+          .retro-window-container[data-active="true"] {
+             border-color: #000;
+          }
+          .retro-window-container[data-active="true"] .retro-window-title-bar {
+             background: #000080; /* Dark blue when active */
+          }
+          .retro-window-container[data-active="false"] .retro-window-title-bar {
+             background: #808080; /* Gray when inactive */
+          }
+          
           .retro-window-title-bar {
              background: #000080;
              padding: 3px 2px 3px 6px;
@@ -57,6 +82,9 @@ const RetroWindow = ({ title, children, className = "" }) => {
              background-color: #c0c0c0;
              position: relative;
              color: black;
+             height: 100%;
+             display: flex;
+             flex-direction: column;
           }
         `}
       </style>
@@ -86,9 +114,8 @@ const styles = {
     position: 'relative',
     display: 'flex',
     flexDirection: 'column',
-    margin: '4rem 0',
+    margin: 0,
     width: '100%',
-    overflow: 'hidden',
   }
 };
 

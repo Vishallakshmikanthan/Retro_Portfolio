@@ -28,7 +28,38 @@
   -webkit-background-clip: border-box !important;
   mask-image: none !important;
   -webkit-mask-image: none !important;
+}
+
+*:not(.retro-window):not(.retro-window *) {
   filter: none !important;
+}
+
+/* Allow blur for windows despite nuclear reset */
+.retro-window {
+  will-change: transform, opacity, filter;
+}
+
+.crt-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: repeating-linear-gradient(
+    rgba(18, 16, 16, 0) 0%,
+    rgba(100, 100, 100, 0.05) 0.5%,
+    rgba(18, 16, 16, 0) 1%
+  );
+  background-size: 100% 4px;
+  z-index: 10000;
+  pointer-events: none;
+  opacity: 0.05;
+  animation: scanline 10s linear infinite;
+}
+
+@keyframes scanline {
+  0% { background-position: 0 0; }
+  100% { background-position: 0 100%; }
 }
 
 html, body {
@@ -60,6 +91,69 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 /* ──────────────────────────────────────────────
+   FULL-SCREEN SECTIONS — NO BLANK SPACE
+────────────────────────────────────────────── */
+.section {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+}
+
+/* All <section> tags get full-screen treatment */
+section {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  background-color: var(--bg);
+  border-bottom: 2px solid var(--gray-dark);
+  position: relative;
+  overflow: hidden;
+}
+
+/* ──────────────────────────────────────────────
+   WINDOW STACKING LAYOUT — LAYERED OS FEEL
+────────────────────────────────────────────── */
+.stack-layout {
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+  width: 90%;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 40px 0;
+}
+
+.window-wrapper {
+  width: 90%;
+  max-width: 1200px;
+  margin: auto;
+}
+
+.window-main {
+  position: relative;
+  z-index: 3;
+  transform: translateZ(0);
+}
+
+.window-secondary {
+  position: relative;
+  z-index: 2;
+  opacity: 0.95;
+  margin-left: 2rem;
+}
+
+.window-background {
+  position: relative;
+  z-index: 1;
+  opacity: 0.9;
+  margin-left: 4rem;
+}
+
+/* ──────────────────────────────────────────────
    RETRO UI COMPONENTS
  ────────────────────────────────────────────── */
 
@@ -73,21 +167,19 @@ h1, h2, h3, h4, h5, h6 {
 
 .section-container {
   max-width: 1100px;
+  width: 90%;
   margin: 0 auto;
   padding: 2rem;
-}
-
-section {
-  background-color: var(--bg);
-  border-bottom: 2px solid var(--gray-dark);
 }
 
 /* ──────────────────────────────────────────────
    HEADER & NAV
 ────────────────────────────────────────────── */
 .site-header {
-  position: sticky;
+  position: fixed;
   top: 0;
+  left: 0;
+  width: 100%;
   z-index: 1000;
   background-color: var(--bg-panel);
   border-bottom: 2px solid var(--gray-dark);
@@ -140,6 +232,26 @@ section {
 }
 
 /* ──────────────────────────────────────────────
+   PROJECT CARD HIERARCHY
+────────────────────────────────────────────── */
+.project-card {
+  transform: scale(0.95);
+  opacity: 0.8;
+  transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+.project-card.active,
+.project-card:focus-within {
+  transform: scale(1);
+  opacity: 1;
+}
+
+.project-card:hover {
+  transform: scale(1.02) translateY(-4px);
+  opacity: 1;
+}
+
+/* ──────────────────────────────────────────────
    FOOTER
 ────────────────────────────────────────────── */
 .site-footer {
@@ -160,4 +272,195 @@ section {
 }
 .desktop-icon:active {
   background: rgba(0, 0, 128, 0.6) !important;
+}
+
+.parent-container {
+  min-height: 100vh;
+}
+
+/* ──────────────────────────────────────────────
+   RETRO WINDOW — HOVER & STACKING
+────────────────────────────────────────────── */
+.retro-window {
+  transform-style: preserve-3d;
+  transition: transform 0.3s ease-out;
+  /* No margin — stack-layout gap handles spacing */
+}
+
+.retro-window-container {
+  margin: 0 !important; /* Remove old 4rem margin, gap handles it */
+}
+
+.retro-window:hover {
+  transform: scale(1.005) translateY(-2px);
+  z-index: 50;
+}
+
+/* ──────────────────────────────────────────────
+   WINDOW OPEN ANIMATION (GSAP + CSS fallback)
+────────────────────────────────────────────── */
+@keyframes windowOpen {
+  from {
+    transform: scale(0.95);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.window-enter {
+  animation: windowOpen 0.35s ease-out forwards;
+}
+
+/* ──────────────────────────────────────────────
+   BUTTON PRESS ANIMATION (Windows style)
+────────────────────────────────────────────── */
+button:active,
+.retro-btn:active,
+[class*="retro-button"]:active {
+  transform: scale(0.97) translateY(1px) !important;
+}
+
+/* ──────────────────────────────────────────────
+   HORIZONTAL SCROLL PANEL (Achievements)
+────────────────────────────────────────────── */
+.h-scroll-track {
+  display: flex;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  gap: 24px;
+  padding: 1rem 6vw;
+  -webkit-overflow-scrolling: touch;
+}
+
+.h-scroll-card {
+  flex-shrink: 0;
+  scroll-snap-align: center;
+  transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+.h-scroll-card:hover {
+  transform: scale(1.05) !important;
+}
+
+/* Windows 98 style scrollbar */
+.h-scroll-track::-webkit-scrollbar {
+  height: 16px;
+  background: var(--bg-panel);
+}
+
+.h-scroll-track::-webkit-scrollbar-track {
+  background: var(--bg-panel);
+  border: 1px inset var(--gray-dark);
+}
+
+.h-scroll-track::-webkit-scrollbar-thumb {
+  background: var(--bg);
+  border: 2px solid;
+  border-color: #fff #808080 #808080 #fff;
+  min-width: 24px;
+}
+
+.h-scroll-track::-webkit-scrollbar-button {
+  background: var(--bg);
+  border: 2px solid;
+  border-color: #fff #808080 #808080 #fff;
+  width: 16px;
+  height: 16px;
+  display: block;
+}
+
+/* ──────────────────────────────────────────────
+   AMBIENT DESKTOP ELEMENTS
+────────────────────────────────────────────── */
+.ambient-icon {
+  position: absolute;
+  opacity: 0.12;
+  animation: float 12s ease-in-out infinite;
+  pointer-events: none;
+  z-index: -1;
+  user-select: none;
+}
+
+@keyframes float {
+  0% { transform: translateY(0px) rotate(0deg); }
+  33% { transform: translateY(-15px) rotate(2deg); }
+  66% { transform: translateY(-5px) rotate(-2deg); }
+  100% { transform: translateY(0px) rotate(0deg); }
+}
+
+.system-metrics-overlay {
+  position: fixed;
+  top: 50px; /* Below header */
+  right: 20px;
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 11px;
+  color: #000;
+  opacity: 0.5;
+  text-align: right;
+  pointer-events: none;
+  z-index: 50;
+  line-height: 1.4;
+  letter-spacing: 1px;
+}
+
+/* ──────────────────────────────────────────────
+   HERO DESKTOP LAYOUT
+────────────────────────────────────────────── */
+.hero-desktop-layout {
+  display: grid;
+  grid-template-columns: 90px 1fr;
+  grid-template-rows: 1fr;
+  height: 100%;
+  width: 100%;
+  align-items: center;
+  gap: 0;
+}
+
+.hero-icons-sidebar {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: 4rem 0 4rem 1rem;
+  height: 100%;
+  justify-content: center;
+}
+
+.hero-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+  padding: 2rem;
+}
+
+/* ──────────────────────────────────────────────
+   ABOUT SECTION SPLIT LAYOUT
+────────────────────────────────────────────── */
+.about-grid {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+  gap: 40px;
+  align-items: start;
+  width: 100%;
+}
+
+@media (max-width: 1024px) {
+  .about-grid {
+    grid-template-columns: 1fr;
+  }
+  .hero-desktop-layout {
+    grid-template-columns: 1fr;
+    grid-template-rows: auto 1fr;
+  }
+  .hero-icons-sidebar {
+    flex-direction: row;
+    height: auto;
+    padding: 1rem;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
 }

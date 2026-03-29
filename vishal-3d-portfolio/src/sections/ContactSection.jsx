@@ -20,15 +20,15 @@ const socials = [
 
 export default function ContactSection() {
   const sectionRef = useRef(null)
-  const [status, setStatus] = useState("idle") // idle | sending | sent
+  const [status, setStatus] = useState("idle")
 
   useEffect(() => {
     const section = sectionRef.current
     if (!section) return
 
-    gsap.fromTo(section.querySelectorAll(".contact-animate"), 
+    gsap.fromTo(section.querySelectorAll(".contact-animate"),
       { opacity: 0, y: 20 },
-      { 
+      {
         opacity: 1, y: 0, stagger: 0.1,
         scrollTrigger: {
           trigger: section,
@@ -48,22 +48,34 @@ export default function ContactSection() {
     <section
       id="contact"
       ref={sectionRef}
-      className="contact-section relative min-h-screen flex flex-col justify-center py-24 border-t-2 border-white"
+      className="contact-section"
       style={{
-        backgroundImage: 'url(/images/contact_bg.jpg)',
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
-        backgroundAttachment: 'fixed'
+        backgroundImage: "url(/images/contact_bg.jpg)",
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+        backgroundAttachment: "fixed",
+        minHeight: "100vh",
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "center",
+        alignItems: "center",
+        padding: "5rem 1rem",
+        borderTop: "2px solid white",
       }}
     >
-      <div className="section-container">
+      <div className="section-container" style={{ width: "100%" }}>
         {/* Heading */}
-        <div className="section-header text-center mb-16 contact-animate bg-black/40 backdrop-blur-sm p-4 inline-block mx-auto border-2 border-white/20">
-          <p className="retro-overline mb-2" style={{ color: 'white', fontWeight: 'bold' }}>COMMS_CHANNEL: EXTERNAL</p>
-          <h2 className="text-5xl md:text-6xl font-black retro-heading" style={{ color: 'white' }}>
+        <div
+          className="section-header text-center mb-12 contact-animate bg-black/40 backdrop-blur-sm p-4 inline-block mx-auto border-2 border-white/20"
+          style={{ display: "block" }}
+        >
+          <p className="retro-overline mb-2" style={{ color: "white", fontWeight: "bold" }}>
+            COMMS_CHANNEL: EXTERNAL
+          </p>
+          <h2 className="text-5xl md:text-6xl font-black retro-heading" style={{ color: "white" }}>
             CONNECT.EXE
           </h2>
-          <p className="mt-4 text-lg font-mono opacity-80" style={{ color: 'white' }}>
+          <p className="mt-4 text-lg font-mono opacity-80" style={{ color: "white" }}>
             COLLABORATIONS · HACKATHONS · INTERNSHIPS
           </p>
         </div>
@@ -100,7 +112,7 @@ export default function ContactSection() {
           </div>
 
           {/* Sidebar */}
-          <aside className="contact-animate space-y-12 lg:pl-12">
+          <aside className="contact-animate space-y-8 lg:pl-8">
             <div className="retro-card border-2 border-gray-dark bg-white p-6 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
               <p className="text-xs font-bold uppercase opacity-50 mb-2">Primary_Email:</p>
               <a href="mailto:vishallakshmikanthan@gmail.com" className="text-xl font-bold text-blue-900 hover:underline break-all">
@@ -119,7 +131,9 @@ export default function ContactSection() {
                     rel="noopener noreferrer"
                     className="flex items-center gap-4 group"
                   >
-                    <span className="w-12 h-12 flex items-center justify-center bg-blue-900 text-white font-bold border-2 border-black group-hover:bg-blue-700">{icon}</span>
+                    <span className="w-12 h-12 flex items-center justify-center bg-blue-900 text-white font-bold border-2 border-black group-hover:bg-blue-700">
+                      {icon}
+                    </span>
                     <span className="font-bold uppercase group-hover:underline">{label}</span>
                   </a>
                 ))}

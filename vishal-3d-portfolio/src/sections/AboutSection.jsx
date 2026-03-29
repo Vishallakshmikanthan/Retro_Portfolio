@@ -16,12 +16,14 @@ export default function AboutSection() {
 
     const elements = section.querySelectorAll(".about-highlight, .about-bio, .about-title")
 
-    gsap.fromTo(elements, 
-      { opacity: 0, y: 20 }, 
-      { opacity: 1, y: 0, duration: 0.5, stagger: 0.1, scrollTrigger: {
-        trigger: section,
-        start: "top 80%",
-      }}
+    gsap.fromTo(elements,
+      { opacity: 0, y: 20 },
+      {
+        opacity: 1, y: 0, duration: 0.5, stagger: 0.1, scrollTrigger: {
+          trigger: section,
+          start: "top 80%",
+        }
+      }
     )
   }, [])
 
@@ -29,26 +31,38 @@ export default function AboutSection() {
     <section
       id="about"
       ref={sectionRef}
-      className="about-section relative min-h-screen flex items-center py-24 border-t-2 border-white"
+      className="about-section"
       style={{
-        backgroundImage: 'url(/images/about_bg.jpg)',
-        backgroundSize: 'cover',
-        backgroundPosition: 'center 85%',
-        backgroundAttachment: 'fixed',
-        overflow: 'hidden'
+        backgroundImage: "url(/images/about_bg.jpg)",
+        backgroundSize: "cover",
+        backgroundPosition: "center 85%",
+        backgroundAttachment: "fixed",
+        minHeight: "100vh",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        overflow: "hidden",
+        padding: "5rem 1rem",
+        borderTop: "2px solid white",
       }}
     >
-      {/* ── Y2K DECORATIVE LAYER ── */}
-      <div className="absolute inset-0 pointer-events-none z-10 overflow-hidden">
-        {/* Subtle decorative quote or grain if needed, otherwise lean into images */}
-      </div>
-
-      <div className="container mx-auto px-6 grid grid-cols-1 lg:grid-cols-2 gap-16 items-center relative z-20">
-
+      <div
+        className="about-grid section-container"
+        style={{
+          display: "grid",
+          gridTemplateColumns: "1.2fr 1fr",
+          gap: "40px",
+          alignItems: "start",
+          width: "100%",
+          maxWidth: "1100px",
+        }}
+      >
         {/* LEFT: Text content */}
         <div className="about-text-col">
-          <p className="retro-overline mb-2" style={{ color: 'var(--primary)', fontWeight: 'bold' }}>USER_PROFILE: 001</p>
-          <h2 className="text-5xl md:text-6xl font-black retro-heading mb-8">
+          <p className="retro-overline mb-2" style={{ color: "var(--primary)", fontWeight: "bold" }}>
+            USER_PROFILE: 001
+          </p>
+          <h2 className="text-5xl font-black retro-heading mb-8">
             VISHAL LAKSHMIKANTHAN
           </h2>
 
@@ -69,19 +83,23 @@ export default function AboutSection() {
               champion, state-level boxer, and track athlete.
             </p>
 
-            {/* Quote decoration from target design */}
             <div className="absolute -top-12 -left-8 text-6xl text-white opacity-20 font-serif">""</div>
           </div>
-
         </div>
 
-        {/* RIGHT: Face Detection / Profile Photo (Integrated with highlights) */}
-        <div className="about-highlights-col space-y-6 flex flex-col items-center lg:items-end">
-          
-          {/* ── PROFILE WINDOW (Y2K FACE DETECTION) ── */}
-          <div className="relative mb-8 group">
-            {/* The Windows Container */}
-            <div className="bg-[#c0c0c0] border-2 border-white border-b-black border-r-black p-1 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] max-w-[340px]">
+        {/* RIGHT: Profile window + education + achievements stacked */}
+        <div
+          className="about-highlights-col"
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            gap: "20px",
+            alignItems: "flex-start",
+          }}
+        >
+          {/* ── PROFILE WINDOW ── */}
+          <div className="relative group" style={{ width: "100%", maxWidth: "340px" }}>
+            <div className="bg-[#c0c0c0] border-2 border-white border-b-black border-r-black p-1 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
               <div className="bg-blue-900 text-white px-2 py-1 flex justify-between items-center mb-1">
                 <span className="text-[10px] font-bold uppercase tracking-wider">IDENTITY_SCANNER.EXE</span>
                 <div className="flex gap-1">
@@ -89,46 +107,41 @@ export default function AboutSection() {
                   <div className="w-3 h-3 bg-[#c0c0c0] border border-black text-[8px] flex items-center justify-center text-black">×</div>
                 </div>
               </div>
-              
+
               <div className="relative bg-black transition-transform duration-300 group-hover:scale-[1.02] overflow-hidden">
-                <img 
-                  src="/images/profile_photo.jpg" 
-                  alt="Vishal" 
+                <img
+                  src="/images/profile_photo.jpg"
+                  alt="Vishal"
                   className="w-full h-auto object-contain"
                 />
-                
-                {/* Subtle digital noise overlay */}
-                <div className="absolute inset-0 bg-scan-lines opacity-10 pointer-events-none"></div>
               </div>
             </div>
-            
-            {/* Design elements from screenshot: Floating tags */}
+
             <div className="absolute -bottom-4 -left-4 bg-[#00ff00] text-black text-[10px] font-bold px-3 py-1 shadow-md z-30">
-               SCAN COMPLETE: 100%
+              SCAN COMPLETE: 100%
             </div>
           </div>
 
-          <div className="w-full space-y-4">
+          {/* Education + Achievements stacked */}
+          <div style={{ width: "100%", display: "flex", flexDirection: "column", gap: "12px", marginTop: "1.5rem" }}>
             {highlights.map(({ icon, label, sub }) => (
-            <div key={label} className="retro-card p-6 border-2 border-gray-dark bg-white shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
-              <div className="flex gap-4 items-center">
-                <span className="text-4xl">{icon}</span>
-                <div>
-                  <p className="font-bold text-blue-900 uppercase">{label}</p>
-                  <p className="text-gray-600 text-xs mt-1">{sub}</p>
+              <div key={label} className="retro-card about-highlight p-4 border-2 border-gray-dark bg-white shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
+                <div className="flex gap-3 items-center">
+                  <span className="text-3xl">{icon}</span>
+                  <div>
+                    <p className="font-bold text-blue-900 uppercase text-sm">{label}</p>
+                    <p className="text-gray-600 text-xs mt-1">{sub}</p>
+                  </div>
                 </div>
               </div>
+            ))}
+
+            {/* Decorative code block */}
+            <div className="p-4 border-2 border-gray-dark bg-black text-green-500 font-mono text-xs shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
+              <pre>{`const vishal = {\n  college: "Sairam Engg",\n  cgpa: 9.13,\n  sport: "Boxing 🥊",\n  status: "Coding..."\n}`}</pre>
             </div>
-          ))}
-
-          {/* Decorative code block */}
-          <div className="p-6 border-2 border-gray-dark bg-black text-green-500 font-mono text-sm shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
-            <pre>{`const vishal = {\n  college: "Sairam Engg",\n  cgpa: 9.13,\n  sport: "Boxing 🥊",\n  status: "Coding..."\n}`}</pre>
-          </div>
-
           </div>
         </div>
-
       </div>
     </section>
   )

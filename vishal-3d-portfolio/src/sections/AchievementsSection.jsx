@@ -53,7 +53,6 @@ export default function AchievementsSection() {
     const track = trackRef.current
     if (!section || !track) return
 
-    // Wait one frame so layout is settled
     const id = requestAnimationFrame(() => {
       const ctx = gsap.context(() => {
         const travelX = -(track.scrollWidth - window.innerWidth + 200)
@@ -66,7 +65,7 @@ export default function AchievementsSection() {
             start: "top top",
             end: () => `+=${Math.abs(travelX)}`,
             pin: true,
-            pinSpacing: true,   // let GSAP add the spacer normally
+            pinSpacing: true,
             scrub: 1,
             invalidateOnRefresh: true,
           },
@@ -78,7 +77,9 @@ export default function AchievementsSection() {
 
     return () => {
       cancelAnimationFrame(id)
-      ScrollTrigger.getAll().forEach(st => st.kill())
+      ScrollTrigger.getAll()
+        .filter(st => st.trigger === sectionRef.current)
+        .forEach(st => st.kill())
     }
   }, [])
 
@@ -90,7 +91,7 @@ export default function AchievementsSection() {
         position: "relative",
         width: "100%",
         height: "100vh",
-        overflow: "hidden",          // only on the section itself
+        overflow: "hidden",
         backgroundImage: "url(/images/achievements_bg.jpg)",
         backgroundSize: "cover",
         backgroundPosition: "center",
@@ -101,7 +102,7 @@ export default function AchievementsSection() {
         alignItems: "center",
       }}
     >
-      {/* ── Retro Title Bar (decorative) ── */}
+      {/* ── Retro Title Bar ── */}
       <div
         style={{
           width: "100%",
@@ -125,7 +126,12 @@ export default function AchievementsSection() {
         <span>EVENTS_AND_MILESTONES.LOG</span>
         <div style={{ display: "flex", gap: 2 }}>
           {["_", "□", "×"].map(l => (
-            <button key={l} style={{ width: 18, height: 18, background: "#c0c0c0", border: "1px solid #000", fontSize: 10, fontWeight: "bold", cursor: "pointer" }}>{l}</button>
+            <button
+              key={l}
+              style={{ width: 18, height: 18, background: "#c0c0c0", border: "1px solid #000", fontSize: 10, fontWeight: "bold", cursor: "pointer" }}
+            >
+              {l}
+            </button>
           ))}
         </div>
       </div>
@@ -133,7 +139,9 @@ export default function AchievementsSection() {
       {/* ── Header ── */}
       <div style={{ textAlign: "center", marginBottom: "1.5rem", marginTop: "28px", zIndex: 2 }}>
         <div style={{ display: "inline-block", background: "rgba(0,0,0,0.55)", border: "2px solid rgba(255,255,255,0.25)", padding: "1.25rem 2rem" }}>
-          <p style={{ color: "#fff", fontWeight: "bold", marginBottom: "0.4rem", fontFamily: "monospace", letterSpacing: "2px", fontSize: "0.75rem" }}>SYSTEM_LOG: EVENTS_AND_MILESTONES</p>
+          <p style={{ color: "#fff", fontWeight: "bold", marginBottom: "0.4rem", fontFamily: "monospace", letterSpacing: "2px", fontSize: "0.75rem" }}>
+            SYSTEM_LOG: EVENTS_AND_MILESTONES
+          </p>
           <h2 style={{ fontSize: "clamp(1.5rem,4vw,2.5rem)", fontWeight: 900, color: "#fff", textTransform: "uppercase", fontFamily: "'Courier New', monospace" }}>
             EVENTS_MILESTONES.EXE
           </h2>
@@ -143,7 +151,7 @@ export default function AchievementsSection() {
         </div>
       </div>
 
-      {/* ── Card Track Wrapper (forces start alignment) ── */}
+      {/* ── Card Track ── */}
       <div
         style={{
           width: "100%",
@@ -167,7 +175,17 @@ export default function AchievementsSection() {
           }}
         >
           {timelineItems.map(({ year, title, org, description, type, icon }, i) => (
-            <AchCard key={title} index={i} year={year} title={title} org={org} description={description} icon={icon} type={type} total={timelineItems.length} />
+            <AchCard
+              key={title}
+              index={i}
+              year={year}
+              title={title}
+              org={org}
+              description={description}
+              icon={icon}
+              type={type}
+              total={timelineItems.length}
+            />
           ))}
         </div>
       </div>
@@ -177,8 +195,21 @@ export default function AchievementsSection() {
 
 /* ─── Card ──────────────────────────────────────────────── */
 function AchCard({ index, year, title, org, description, icon, type, total }) {
+  const cardRef = useRef(null)
+
+  const handleMouseEnter = () => {
+    gsap.to(cardRef.current, { scale: 1.05, duration: 0.25, ease: "power2.out" })
+  }
+  const handleMouseLeave = () => {
+    gsap.to(cardRef.current, { scale: 1, duration: 0.25, ease: "power2.in" })
+  }
+
   return (
     <div
+      ref={cardRef}
+      onMouseEnter={handleMouseEnter}
+      onMouseLeave={handleMouseLeave}
+      className="h-scroll-card"
       style={{
         flexShrink: 0,
         width: CARD_W,
@@ -186,17 +217,25 @@ function AchCard({ index, year, title, org, description, icon, type, total }) {
         border: "2px solid #808080",
         padding: "1.5rem",
         position: "relative",
+        scrollSnapAlign: "center",
+        cursor: "default",
       }}
     >
       <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "0.75rem" }}>
-        <span style={{ background: "#000080", color: "#fff", padding: "2px 8px", fontSize: "0.7rem", fontFamily: "monospace", fontWeight: "bold", textTransform: "uppercase" }}>{type}</span>
+        <span style={{ background: "#000080", color: "#fff", padding: "2px 8px", fontSize: "0.7rem", fontFamily: "monospace", fontWeight: "bold", textTransform: "uppercase" }}>
+          {type}
+        </span>
         <span style={{ fontSize: "0.8rem", fontWeight: "bold", fontFamily: "monospace" }}>{year}</span>
       </div>
       <div style={{ display: "flex", gap: "0.75rem", alignItems: "center", marginBottom: "0.75rem" }}>
         <span style={{ fontSize: "1.8rem" }}>{icon}</span>
-        <h3 style={{ fontSize: "1rem", fontWeight: "bold", textTransform: "uppercase", fontFamily: "'Courier New', monospace" }}>{title}</h3>
+        <h3 style={{ fontSize: "1rem", fontWeight: "bold", textTransform: "uppercase", fontFamily: "'Courier New', monospace" }}>
+          {title}
+        </h3>
       </div>
-      <p style={{ color: "#000080", fontSize: "0.8rem", fontWeight: "bold", marginBottom: "0.75rem", fontFamily: "monospace" }}>{org}</p>
+      <p style={{ color: "#000080", fontSize: "0.8rem", fontWeight: "bold", marginBottom: "0.75rem", fontFamily: "monospace" }}>
+        {org}
+      </p>
       <p style={{ fontSize: "0.85rem", lineHeight: "1.6", fontFamily: "monospace" }}>{description}</p>
       <div style={{ position: "absolute", bottom: "0.75rem", right: "0.75rem", fontSize: "0.65rem", opacity: 0.5, fontFamily: "monospace" }}>
         {index + 1} / {total}

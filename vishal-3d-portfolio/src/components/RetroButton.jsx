@@ -1,4 +1,5 @@
 import React from 'react';
+import { useWindow } from '../context/WindowContext';
 
 /**
  * RetroButton Component
@@ -22,11 +23,12 @@ const RetroButton = ({
   className = '', 
   disabled = false 
 }) => {
+  const { playSound } = useWindow();
   const isLink = !!href;
   const Component = isLink ? 'a' : 'button';
   const props = isLink 
-    ? { href, download, target: "_blank", rel: "noopener noreferrer" } 
-    : { onClick, type, disabled };
+    ? { href, download, target: "_blank", rel: "noopener noreferrer", onClick: playSound } 
+    : { onClick: (e) => { playSound(); if(onClick) onClick(e); }, type, disabled };
 
   return (
     <Component
@@ -66,11 +68,7 @@ const RetroButton = ({
              border-left: 2px solid #000000;
              border-right: 2px solid #ffffff;
              border-bottom: 2px solid #ffffff;
-             padding-top: 5px;
-             padding-left: 13px;
-             padding-right: 11px;
-             padding-bottom: 3px;
-             transform: scale(0.98);
+             transform: translate(2px, 2px); /* Authentic push effect */
           }
 
           .retro-button:disabled {

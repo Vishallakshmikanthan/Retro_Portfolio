@@ -40,14 +40,14 @@ export default function ModelViewer() {
     <div style={{ width: '100%', height: '100%', background: '#000' }}>
       <Canvas 
         shadows={false} 
-        camera={{ position: [0, 0, 10], fov: 40 }}
+        camera={{ position: [0, 0.5, 6.5], fov: 35 }}
         gl={{ antialias: true, alpha: false }}
       >
         <Suspense fallback={null}>
           <ambientLight intensity={2} />
           <pointLight position={[10, 10, 10]} intensity={2} />
           <Center>
-            <Model url="models/dev.glb" />
+            <Model url="/models/dev.glb" />
           </Center>
         </Suspense>
         <OrbitControls 
@@ -64,4 +64,4 @@ export default function ModelViewer() {
 }
 
 // Preload the model
-useGLTF.preload('models/dev.glb');
+useGLTF.preload('/models/dev.glb');
