@@ -11,6 +11,7 @@ const DesktopIcon = ({ icon, label, onClick, index = 0, windowTitle }) => {
   const containerRef = useRef(null);
   const iconRef = useRef(null);
   const labelRef = useRef(null);
+  const lastDblClick = useRef(0);
 
   useEffect(() => {
     // 3. LOAD ANIMATION: Icons appear with stagger (100ms delay)
@@ -51,8 +52,11 @@ const DesktopIcon = ({ icon, label, onClick, index = 0, windowTitle }) => {
 
   // 1. DOUBLE CLICK: Detect double click, Trigger window open animation
   const onDoubleClickHandler = (e) => {
-    // Detect double click is handled by React's onDoubleClick
-    
+    // 300ms explicit debounce
+    const now = Date.now();
+    if (now - lastDblClick.current < 300) return;
+    lastDblClick.current = now;
+
     // Window should animate from icon position (GSAP)
     // We create a "ghost" expansion effect to simulate the window scaling out
     const rect = iconRef.current.getBoundingClientRect();

@@ -7,6 +7,10 @@ export function SystemHUDProvider({ children }) {
   const [isExplorerOpen, setIsExplorerOpen] = useState(false);
   const [isPerformanceMode, setIsPerformanceMode] = useState(false);
   const [isDeveloperMode, setIsDeveloperMode] = useState(false);
+  const [contextMenu, setContextMenu] = useState({ visible: false, x: 0, y: 0 });
+  const [isStartMenuOpen, setIsStartMenuOpen] = useState(false);
+  const [isAnalyticsOpen, setIsAnalyticsOpen] = useState(false);
+  const [isTerminalOpen, setIsTerminalOpen] = useState(false);
 
   // Helper to add a message, preventing identical messages from spamming
   const dispatchMessage = useCallback((msg, duration = 3000) => {
@@ -46,7 +50,15 @@ export function SystemHUDProvider({ children }) {
       isPerformanceMode,
       togglePerformanceMode,
       isDeveloperMode,
-      enableDeveloperMode
+      enableDeveloperMode,
+      contextMenu,
+      setContextMenu,
+      isStartMenuOpen,
+      setIsStartMenuOpen,
+      isAnalyticsOpen,
+      setIsAnalyticsOpen,
+      isTerminalOpen,
+      setIsTerminalOpen
     }}>
       {children}
     </SystemHUDContext.Provider>

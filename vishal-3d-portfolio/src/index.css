@@ -644,3 +644,29 @@ button:active,
   box-shadow: 0 0 0 2px var(--primary) !important;
   transition: box-shadow 0.2s linear;
 }
+
+/* ──────────────────────────────────────────────
+   V2: Windows 95 Authenticity
+────────────────────────────────────────────── */
+*:focus-visible {
+  outline: 1px dotted black !important;
+  outline-offset: -1px;
+}
+
+button:disabled, .retro-btn:disabled, [class*="retro-button"]:disabled {
+  color: #808080 !important;
+  text-shadow: 1px 1px 0px #ffffff;
+  cursor: not-allowed !important;
+}
+
+.cursor-wait, .cursor-wait * {
+  cursor: wait !important;
+}
+
+/* Tooltip Delay Modification */
+.retro-tooltip {
+  transition-delay: 0s !important; /* Fast hide */
+}
+.retro-tooltip-container:hover .retro-tooltip {
+  transition-delay: 800ms !important; /* Detailed appearance delay */
+}

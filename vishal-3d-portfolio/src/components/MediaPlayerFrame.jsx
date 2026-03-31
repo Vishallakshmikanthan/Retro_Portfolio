@@ -1,5 +1,6 @@
 import React from 'react';
-import ModelViewer from './ModelViewer';
+// import ModelViewer from './ModelViewer';
+import RetroAppFrame from './RetroAppFrame';
 
 /**
  * MediaPlayerFrame Component
@@ -28,18 +29,19 @@ export default function MediaPlayerFrame() {
         ))}
       </div>
 
-      {/* Main Content Area (Model Viewer) */}
+      {/* Main Content Area (Retro App Frame) */}
       <div className="wmp-content" style={styles.contentArea}>
-        <ModelViewer />
+        {/* <ModelViewer /> */}
+        <RetroAppFrame src="/images/profile_photo.jpg" alt="Profile" />
       </div>
 
       {/* Status Bar */}
-      <div className="wmp-status-bar" style={styles.statusBar}>
+      {/* <div className="wmp-status-bar" style={styles.statusBar}>
         <span style={styles.statusText}>Move: Swirl | Click: Rotate | Scroll: Zoom — Go Immersive!</span>
-      </div>
+      </div> */}
 
       {/* Playback Controls */}
-      <div className="wmp-controls" style={styles.controls}>
+      {/* <div className="wmp-controls" style={styles.controls}>
         <div style={styles.playbackButtons}>
            <div style={styles.retroBtn}>▶</div>
            <div style={styles.retroBtn}>⏸</div>
@@ -50,7 +52,7 @@ export default function MediaPlayerFrame() {
         <div style={styles.progressBarTrack}>
           <div style={styles.progressBarFill}></div>
         </div>
-      </div>
+      </div> */}
     </div>
   );
 }
@@ -142,11 +144,8 @@ const styles = {
   },
   contentArea: {
     flex: 1,
-    background: '#000', /* Black background to contrast the model */
+    background: 'transparent',
     margin: '4px',
-    border: '2px solid #808080', /* Inset look */
-    borderRightColor: '#fff',
-    borderBottomColor: '#fff',
     position: 'relative',
   },
   statusBar: {

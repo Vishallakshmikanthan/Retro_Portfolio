@@ -43,8 +43,10 @@ const RetroButton = ({
     if (onClickLabel && href) {
         e.preventDefault();
         setIsPending(true);
+        document.body.classList.add('cursor-wait');
         setTimeout(() => {
             setIsPending(false);
+            document.body.classList.remove('cursor-wait');
             const a = document.createElement('a');
             a.href = href;
             if (download) a.download = download === true ? '' : download;
@@ -56,7 +58,9 @@ const RetroButton = ({
         if (href) {
             // For regular links without intercept, just brief delay
             e.preventDefault();
+            document.body.classList.add('cursor-wait');
             setTimeout(() => {
+                document.body.classList.remove('cursor-wait');
                 const a = document.createElement('a');
                 a.href = href;
                 if (download) a.download = download === true ? '' : download;
@@ -67,7 +71,11 @@ const RetroButton = ({
         } else if (onClick) {
             // Delay action slightly for tactile feedback
             e.preventDefault();
-            setTimeout(() => onClick(e), 80);
+            document.body.classList.add('cursor-wait');
+            setTimeout(() => { 
+                document.body.classList.remove('cursor-wait');
+                onClick(e);
+            }, 80);
         }
     }
   };

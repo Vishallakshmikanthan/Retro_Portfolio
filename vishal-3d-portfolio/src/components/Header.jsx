@@ -1,8 +1,10 @@
-import { useEffect, useRef, useState } from "react"
+import { useEffect, useRef, useState, lazy, Suspense } from "react"
 import gsap from "gsap"
 import { ScrollTrigger } from "gsap/ScrollTrigger"
 import RetroButton from "./RetroButton"
 import { useSystemHUD } from "../context/SystemHUDContext"
+
+const RetroDialog = lazy(() => import("./RetroDialog"));
 
 gsap.registerPlugin(ScrollTrigger)
 
@@ -35,6 +37,7 @@ export default function Header() {
     const headerRef = useRef(null)
     const [menuOpen, setMenuOpen] = useState(false)
     const [active, setActive] = useState("hero")
+    const [helpOpen, setHelpOpen] = useState(false)
     
     const { enableDeveloperMode, setIsExplorerOpen, dispatchMessage } = useSystemHUD()
     const [logoClicks, setLogoClicks] = useState(0)
@@ -126,6 +129,19 @@ export default function Header() {
 
     return (
         <header ref={headerRef} className="site-header">
+            {/* Windows 95 Menu Bar */}
+            <div className="w-full bg-[#c0c0c0] border-b border-[#808080] flex text-black items-center px-1 text-xs">
+              <div className="flex px-2 py-0.5 cursor-pointer hover:bg-[#000080] hover:text-white" onClick={() => dispatchMessage("> File menu not configured.")}>
+                <span className="underline">F</span>ile
+              </div>
+              <div className="flex px-2 py-0.5 cursor-pointer hover:bg-[#000080] hover:text-white" onClick={() => dispatchMessage("> View mode: OPTIMAL")}>
+                <span className="underline">V</span>iew
+              </div>
+              <div className="flex px-2 py-0.5 cursor-pointer hover:bg-[#000080] hover:text-white" onClick={() => setHelpOpen(true)}>
+                <span className="underline">H</span>elp
+              </div>
+            </div>
+
             <div className="header-inner">
                 <a
                     href="#hero"
@@ -229,6 +245,18 @@ export default function Header() {
                     ))}
                 </nav>
             )}
+
+            <Suspense fallback={null}>
+                {helpOpen && (
+                    <RetroDialog
+                        isOpen={helpOpen}
+                        title="HELP.EXE"
+                        message="Welcome to Vishal.exe! Navigate using the top bar or desktop icons. Double-click icons or use Right-Click for more options."
+                        onConfirm={() => setHelpOpen(false)}
+                        onClose={() => setHelpOpen(false)}
+                    />
+                )}
+            </Suspense>
         </header>
     )
 }

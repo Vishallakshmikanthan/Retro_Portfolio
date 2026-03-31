@@ -14,7 +14,21 @@ export const WindowProvider = ({ children }) => {
   });
   const [maxZ, setMaxZ] = useState(20);
 
+  const [soundEnabled, setSoundEnabled] = useState(() => {
+    const saved = localStorage.getItem("retroSoundEnabled");
+    return saved !== null ? JSON.parse(saved) : true;
+  });
+
+  const toggleSound = () => {
+    setSoundEnabled(prev => {
+      const next = !prev;
+      localStorage.setItem("retroSoundEnabled", JSON.stringify(next));
+      return next;
+    });
+  };
+
   const playSound = () => {
+    if (!soundEnabled) return;
     try {
       const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
       const oscillator = audioCtx.createOscillator();
@@ -45,7 +59,7 @@ export const WindowProvider = ({ children }) => {
   };
 
   return (
-    <WindowContext.Provider value={{ activeWindow, zIndices, focusWindow, playSound }}>
+    <WindowContext.Provider value={{ activeWindow, zIndices, focusWindow, playSound, soundEnabled, toggleSound }}>
       {children}
     </WindowContext.Provider>
   );

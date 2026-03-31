@@ -1,7 +1,5 @@
-import { useEffect, useRef } from "react"
-import gsap from "gsap"
+import { useRef } from "react"
 import RetroButton from "../components/RetroButton"
-import MediaPlayerFrame from "../components/MediaPlayerFrame"
 import DesktopIcon from "../components/DesktopIcon"
 
 export default function HeroSection() {
@@ -161,17 +159,54 @@ export default function HeroSection() {
           </div>
         </div>
 
-        {/* MEDIA WINDOW (RIGHT SIDE) */}
-        <div
-          className="media-window"
+        {/* COMPOSITED IMAGE LAYER (RIGHT SIDE) — no frame, no container */}
+        <style>{`
+          @keyframes heroFloat {
+            from { transform: translateY(-50%) translateY(0px); }
+            to   { transform: translateY(-50%) translateY(-6px); }
+          }
+        `}</style>
+        <img
+          src="/images/hero_composition.jpeg"
+          alt=""
+          aria-hidden="true"
           style={{
             position: "absolute",
-            top: "140px",
-            right: "80px",
+            right: "5%",
+            top: "50%",
+            transform: "translateY(-50%)",
+            maxWidth: "520px",
+            width: "44vw",
+            height: "auto",
+            objectFit: "contain",
+            /* Soft radial fade — no hard edges */
+            maskImage: [
+              "radial-gradient(ellipse 85% 80% at 55% 50%, black 45%, transparent 100%)",
+              "linear-gradient(to left, transparent 0%, black 18%, black 82%, transparent 100%)",
+              "linear-gradient(to bottom, transparent 0%, black 12%, black 88%, transparent 100%)"
+            ].join(", "),
+            WebkitMaskImage: [
+              "radial-gradient(ellipse 85% 80% at 55% 50%, black 45%, transparent 100%)",
+              "linear-gradient(to left, transparent 0%, black 18%, black 82%, transparent 100%)",
+              "linear-gradient(to bottom, transparent 0%, black 12%, black 88%, transparent 100%)"
+            ].join(", "),
+            maskComposite: "intersect",
+            WebkitMaskComposite: "source-in",
+            /* Colour & depth matching to XP sky/grass palette */
+            filter: [
+              "brightness(1.05)",
+              "contrast(0.88)",
+              "saturate(1.1)",
+              "drop-shadow(0 12px 28px rgba(0,0,0,0.22))",
+              "blur(0.4px)"
+            ].join(" "),
+            /* Subtle float */
+            animation: "heroFloat 4s ease-in-out infinite alternate",
+            zIndex: 5,
+            pointerEvents: "none",
+            userSelect: "none",
           }}
-        >
-          <MediaPlayerFrame />
-        </div>
+        />
 
         {/* SYSTEM METADATA */}
         <div style={{

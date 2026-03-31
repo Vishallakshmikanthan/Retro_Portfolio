@@ -1,6 +1,16 @@
 import PropTypes from 'prop-types';
+import { useState } from 'react';
+import RetroDialog from './RetroDialog';
 
 export default function RetroAlertWindow({ title, image, description, tech, github }) {
+  const [dialogOpen, setDialogOpen] = useState(false);
+  const [pendingUrl, setPendingUrl] = useState('');
+
+  const confirmNav = (url) => {
+    setPendingUrl(url);
+    setDialogOpen(true);
+  };
+
   return (
     <div className="group retro-window w-full bg-[#c0c0c0] border-t-2 border-l-2 border-white border-b-2 border-r-2 border-r-gray-dark border-b-gray-dark shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] flex flex-col font-mono text-black transition-all duration-200">
       
@@ -58,21 +68,13 @@ export default function RetroAlertWindow({ title, image, description, tech, gith
         {/* Buttons Row */}
         <div className="flex justify-center w-full gap-4 mt-auto">
           <button 
-            onClick={() => {
-              setTimeout(() => {
-                window.open(github, '_blank', 'noopener,noreferrer');
-              }, 100);
-            }}
+            onClick={() => confirmNav(github)}
             className="retro-interactive px-6 py-1 bg-[#c0c0c0] border-t-2 border-l-2 border-white border-b-2 border-r-2 border-black font-bold text-sm break-keep whitespace-nowrap group-hover:bg-[#000080] group-hover:text-white transition-colors duration-200"
           >
             Deploy!
           </button>
           <button 
-            onClick={() => {
-              setTimeout(() => {
-                window.open(github, '_blank', 'noopener,noreferrer');
-              }, 100);
-            }}
+            onClick={() => confirmNav(github)}
             className="retro-interactive px-6 py-1 bg-[#c0c0c0] border-t-2 border-l-2 border-white border-b-2 border-r-2 border-black font-bold text-sm break-keep whitespace-nowrap group-hover:bg-[#000080] group-hover:text-white transition-colors duration-200"
           >
             View Source
@@ -80,6 +82,19 @@ export default function RetroAlertWindow({ title, image, description, tech, gith
         </div>
 
       </div>
+
+      <RetroDialog
+        isOpen={dialogOpen}
+        title="EXTERNAL_LINK.EXE"
+        message={`Warning: You are about to execute a jump to ${pendingUrl}. Proceed?`}
+        type="yesno"
+        onConfirm={() => {
+          setDialogOpen(false);
+          window.open(pendingUrl, '_blank', 'noopener,noreferrer');
+        }}
+        onCancel={() => setDialogOpen(false)}
+        onClose={() => setDialogOpen(false)}
+      />
     </div>
   );
 }

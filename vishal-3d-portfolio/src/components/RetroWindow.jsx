@@ -1,5 +1,6 @@
 import React from 'react';
 import { useWindow } from '../context/WindowContext';
+import SystemErrorBoundary from './SystemErrorBoundary';
 
 /**
  * RetroWindow Component
@@ -91,7 +92,10 @@ const RetroWindow = ({ title, children, className = "", style = {}, onClick, id 
 
       {/* Title Bar */}
       <div className="retro-window-title-bar">
-        <div className="retro-window-title">{title || "Untitled"}</div>
+        <div className="retro-window-title">
+          {title || "Untitled"}
+          {isActive ? <span className="text-[#00ff00] font-normal ml-2 tracking-widest">[ACTIVE]</span> : ""}
+        </div>
         <div className="retro-window-controls">
           <button className="retro-window-btn">_</button>
           <button className="retro-window-btn">□</button>
@@ -101,7 +105,16 @@ const RetroWindow = ({ title, children, className = "", style = {}, onClick, id 
 
       {/* Main Content Area */}
       <div className="retro-window-content">
-        {children}
+        <SystemErrorBoundary>
+          {children}
+        </SystemErrorBoundary>
+      </div>
+
+      {/* Windows 95 Status Bar */}
+      <div className="retro-window-status-bar" style={styles.statusBar}>
+        <div style={styles.statusSection}>Status: Ready</div>
+        <div style={styles.statusSection}>Objects: {React.Children.count(children)}</div>
+        <div style={styles.statusSection}>Mode: Optimal</div>
       </div>
     </div>
   );
@@ -116,6 +129,25 @@ const styles = {
     flexDirection: 'column',
     margin: 0,
     width: '100%',
+  },
+  statusBar: {
+    display: 'flex',
+    backgroundColor: '#c0c0c0',
+    borderTop: '1px outset #fff',
+    borderBottom: '1px inset #000',
+    height: '20px',
+    fontSize: '11px',
+    fontFamily: '"MS Sans Serif", Arial, sans-serif',
+    color: '#000',
+  },
+  statusSection: {
+    padding: '2px 6px',
+    flex: 1,
+    borderRight: '1px outset #fff',
+    borderLeft: '1px inset #808080',
+    overflow: 'hidden',
+    whiteSpace: 'nowrap',
+    textOverflow: 'ellipsis'
   }
 };
 
