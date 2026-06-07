@@ -1,6 +1,7 @@
 import { useRef } from "react"
 import RetroButton from "../components/RetroButton"
 import DesktopIcon from "../components/DesktopIcon"
+import MediaPlayerFrame from "../components/MediaPlayerFrame"
 
 export default function HeroSection() {
   const sectionRef = useRef(null)
@@ -14,7 +15,7 @@ export default function HeroSection() {
     <section
       id="hero"
       ref={sectionRef}
-      className="hero-desktop"
+      className="hero-desktop hero-section"
       style={{
         position: "relative",
         height: "100vh",
@@ -159,54 +160,17 @@ export default function HeroSection() {
           </div>
         </div>
 
-        {/* COMPOSITED IMAGE LAYER (RIGHT SIDE) — no frame, no container */}
-        <style>{`
-          @keyframes heroFloat {
-            from { transform: translateY(-50%) translateY(0px); }
-            to   { transform: translateY(-50%) translateY(-6px); }
-          }
-        `}</style>
-        <img
-          src="/images/hero_composition.jpeg"
-          alt=""
-          aria-hidden="true"
-          style={{
-            position: "absolute",
-            right: "5%",
-            top: "50%",
-            transform: "translateY(-50%)",
-            maxWidth: "520px",
-            width: "44vw",
-            height: "auto",
-            objectFit: "contain",
-            /* Soft radial fade — no hard edges */
-            maskImage: [
-              "radial-gradient(ellipse 85% 80% at 55% 50%, black 45%, transparent 100%)",
-              "linear-gradient(to left, transparent 0%, black 18%, black 82%, transparent 100%)",
-              "linear-gradient(to bottom, transparent 0%, black 12%, black 88%, transparent 100%)"
-            ].join(", "),
-            WebkitMaskImage: [
-              "radial-gradient(ellipse 85% 80% at 55% 50%, black 45%, transparent 100%)",
-              "linear-gradient(to left, transparent 0%, black 18%, black 82%, transparent 100%)",
-              "linear-gradient(to bottom, transparent 0%, black 12%, black 88%, transparent 100%)"
-            ].join(", "),
-            maskComposite: "intersect",
-            WebkitMaskComposite: "source-in",
-            /* Colour & depth matching to XP sky/grass palette */
-            filter: [
-              "brightness(1.05)",
-              "contrast(0.88)",
-              "saturate(1.1)",
-              "drop-shadow(0 12px 28px rgba(0,0,0,0.22))",
-              "blur(0.4px)"
-            ].join(" "),
-            /* Subtle float */
-            animation: "heroFloat 4s ease-in-out infinite alternate",
-            zIndex: 5,
-            pointerEvents: "none",
-            userSelect: "none",
-          }}
-        />
+
+        {/* MEDIA PLAYER (RIGHT SIDE) - RESTORED */}
+        <div style={{
+          position: "absolute",
+          right: "5%",
+          top: "50%",
+          transform: "translateY(-50%)",
+          zIndex: 5
+        }}>
+          <MediaPlayerFrame />
+        </div>
 
         {/* SYSTEM METADATA */}
         <div style={{

@@ -1,6 +1,13 @@
 export const projects = [
   // Top 6 Original
   {
+    title: "Ambulance Despatch System - RL Model",
+    description: "A reinforcement learning model designed to optimize ambulance dispatch routes and reduce response times in urban environments.",
+    tech: ["Python", "Reinforcement Learning", "OpenEnv"],
+    github: "https://github.com/Vishallakshmikanthan/Ambulance-Despatch-RL-Model",
+    image: "/images/ambulance_ascii.png"
+  },
+  {
     title: "AI-Adaptive Onboarding",
     description: "An intelligent onboarding and training platform that personalizes employee ramp-up using machine learning models to accelerate time-to-productivity.",
     tech: ["TypeScript", "React", "Node.js", "PostgreSQL", "LangChain", "TailwindCSS"],
@@ -8,11 +15,11 @@ export const projects = [
     image: "/images/ai_onboarding_ascii.png"
   },
   {
-    title: "CredHub",
-    description: "A decentralized credit trust and reputation scoring system. Provides a secure framework for identity and trust verification across networks.",
-    tech: ["TypeScript", "React", "Firebase", "Web3"],
-    github: "https://github.com/Vishallakshmikanthan/CredHub",
-    image: "/images/credhub_ascii.png"
+    title: "Prompt-forge",
+    description: "Browse curated prompts organized by categories, trending status, and community recommendations.",
+    tech: ["TypeScript", "Next.js", "TailwindCSS"],
+    github: "https://github.com/Vishallakshmikanthan/prompt-forge",
+    image: "/images/prompt_forge_ascii.png"
   },
   {
     title: "NightSafe",
@@ -94,6 +101,13 @@ export const projects = [
     tech: ["TypeScript", "Next.js", "TailwindCSS"],
     github: "https://github.com/Vishallakshmikanthan/prompt-forge",
     image: "/images/ai_onboarding_ascii.png"
+  },
+  {
+    title: "CredHub",
+    description: "A decentralized credit trust and reputation scoring system. Provides a secure framework for identity and trust verification across networks.",
+    tech: ["TypeScript", "React", "Firebase", "Web3"],
+    github: "https://github.com/Vishallakshmikanthan/CredHub",
+    image: "/images/credhub_ascii.png"
   },
   {
     title: "Number Guessing Game",

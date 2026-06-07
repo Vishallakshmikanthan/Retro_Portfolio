@@ -8,6 +8,14 @@ gsap.registerPlugin(ScrollTrigger)
 const timelineItems = [
   {
     year: "2026",
+    title: "OpenEnv Hackathon - India's Largest Gen-AI Hackathon",
+    org: "Meta × Pytorch × Hugging Face × Scaler School of Technology",
+    description: "Built a reinforcement learning model to optimize ambulance dispatch routes and reduce response times in urban environments, utilizing OpenEnv for realistic traffic simulation.",
+    type: "hackathon",
+    icon: "🚑"
+  },
+  {
+    year: "2026",
     title: "Impact AI India Buildathon",
     org: "GUVI × HCL",
     description: "Built an AI-Generated Voice Detection system using Python, FastAPI, and Scikit-learn to classify voice samples as AI or Human with high precision.",
