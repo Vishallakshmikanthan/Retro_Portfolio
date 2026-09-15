@@ -7,6 +7,7 @@
  * - GITHUB_TOKEN is never logged, exposed, or transmitted to the client.
  */
 import process from 'node:process';
+import { normalizePortfolioProjects } from '../src/utils/projectNormalizer.js';
 
 export default async function handler(req, res) {
   // 1. Enforce GET method only
@@ -98,45 +99,19 @@ export default async function handler(req, res) {
       }
     }
 
-    // 5. Transform and sanitize repository metadata (exclude sensitive/internal fields)
-    const sanitizedRepositories = allRepos.map((repo) => ({
-      id: repo.id,
-      name: repo.name,
-      full_name: repo.full_name,
-      description: repo.description || null,
-      html_url: repo.html_url,
-      homepage: repo.homepage || null,
-      private: Boolean(repo.private),
-      fork: Boolean(repo.fork),
-      archived: Boolean(repo.archived),
-      disabled: Boolean(repo.disabled),
-      language: repo.language || null,
-      topics: Array.isArray(repo.topics) ? repo.topics : [],
-      stargazers_count: repo.stargazers_count || 0,
-      forks_count: repo.forks_count || 0,
-      watchers_count: repo.watchers_count || 0,
-      open_issues_count: repo.open_issues_count || 0,
-      default_branch: repo.default_branch || 'main',
-      size: repo.size || 0,
-      license: repo.license
-        ? {
-            key: repo.license.key,
-            name: repo.license.name,
-            spdx_id: repo.license.spdx_id || null,
-          }
-        : null,
-      created_at: repo.created_at,
-      updated_at: repo.updated_at,
-      pushed_at: repo.pushed_at,
-    }));
+    // 5. Normalize all repositories and resolve featured projects in manual order
+    const { allProjects, featuredProjects, validation } = normalizePortfolioProjects(allRepos);
 
     // 6. Return standard structured response
     res.setHeader('Content-Type', 'application/json; charset=utf-8');
     return res.status(200).json({
       success: true,
       username,
-      count: sanitizedRepositories.length,
-      repositories: sanitizedRepositories,
+      count: allProjects.length,
+      featuredCount: featuredProjects.length,
+      projects: allProjects,
+      featuredProjects,
+      validation,
     });
   } catch (error) {
     // Network failure or unexpected error
