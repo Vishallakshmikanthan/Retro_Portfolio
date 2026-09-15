@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react"
 import gsap from "gsap"
 import { ScrollTrigger } from "gsap/ScrollTrigger"
-import { projects } from "../data/projects"
+import useProjects from "../hooks/useProjects"
 import RetroAlertWindow from "../components/RetroAlertWindow"
 import RevealOnScroll from "../components/RevealOnScroll"
 import ScanOverlay from "../components/ScanOverlay"
@@ -14,9 +14,13 @@ export default function ProjectsSection() {
   const [isExpanded, setIsExpanded] = useState(false)
   const [activeIndex, setActiveIndex] = useState(0)
 
-  const visibleProjects = isExpanded ? projects : projects.slice(0, 6)
+  const { allProjects, featuredProjects, loading } = useProjects()
 
-  // Track which card is in view → set as active
+  // Initial state: exact 6 featured projects in configured order
+  // Expanded state: full portfolio dataset from allProjects
+  const visibleProjects = isExpanded ? allProjects : featuredProjects
+
+  // Track which card is in view → set as active & refresh ScrollTrigger
   useEffect(() => {
     const section = sectionRef.current
     if (!section) return
@@ -38,10 +42,15 @@ export default function ProjectsSection() {
 
     projectCards.forEach((card) => observer.observe(card))
 
-    setTimeout(() => ScrollTrigger.refresh(), 100)
+    const refreshTimer = setTimeout(() => {
+      ScrollTrigger.refresh()
+    }, 150)
 
-    return () => observer.disconnect()
-  }, [isExpanded])
+    return () => {
+      observer.disconnect()
+      clearTimeout(refreshTimer)
+    }
+  }, [isExpanded, loading, visibleProjects.length])
 
   return (
     <section
@@ -80,7 +89,8 @@ export default function ProjectsSection() {
       }}>
         PAGE_MEM: 1024KB<br/>
         RENDER_MODE: HARDWARE<br/>
-        SYS_TICK: {activeIndex}
+        SYS_TICK: {activeIndex}<br/>
+        RECORDS: {visibleProjects.length}/{allProjects.length || visibleProjects.length}
       </div>
 
       <div className="section-container" style={{ width: "100%" }}>
@@ -102,28 +112,43 @@ export default function ProjectsSection() {
           </div>
         </RevealOnScroll>
 
-        {/* Project grid */}
-        <div ref={gridRef} className="projects-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
-          {visibleProjects.map(({ title, description, tech, github, image }, idx) => (
-            <RevealOnScroll key={title} delay={idx * 0.05}>
-              <div
-                className={`project-card flex${idx === activeIndex ? " active" : ""}`}
-                data-idx={idx}
-              >
-                <RetroAlertWindow
-                  title={title}
-                  description={description}
-                  tech={tech}
-                  github={github}
-                  image={image}
-                />
+        {/* Loading State */}
+        {loading && (
+          <div className="my-12 flex justify-center w-full">
+            <div className="bg-[#c0c0c0] border-t-2 border-l-2 border-white border-b-2 border-r-2 border-black max-w-md w-full p-4 font-mono shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] text-black">
+              <div className="bg-[#000080] text-white px-2 py-1 font-bold text-xs tracking-wider mb-4 flex items-center justify-between">
+                <span>PROJECTS.EXE - INITIALIZING</span>
+                <span className="animate-pulse">●</span>
               </div>
-            </RevealOnScroll>
-          ))}
-        </div>
+              <div className="text-left space-y-1 text-xs leading-relaxed">
+                <p className="font-bold text-gray-700">----------------------------------------</p>
+                <p className="text-[#000080] font-bold">CONNECTING TO GITHUB...</p>
+                <p className="text-green-800 font-bold">LOADING PROJECT DATABASE...</p>
+                <p className="font-bold tracking-widest text-[#000080]">[████████░░░░░░]</p>
+                <p className="font-bold text-gray-700">----------------------------------------</p>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* Project grid */}
+        {!loading && (
+          <div ref={gridRef} className="projects-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
+            {visibleProjects.map((project, idx) => (
+              <RevealOnScroll key={project.id || project.repoName || project.title} delay={idx * 0.05}>
+                <div
+                  className={`project-card flex${idx === activeIndex ? " active" : ""}`}
+                  data-idx={idx}
+                >
+                  <RetroAlertWindow {...project} />
+                </div>
+              </RevealOnScroll>
+            ))}
+          </div>
+        )}
 
         {/* Toggle Button */}
-        {projects.length > 6 && (
+        {!loading && allProjects.length > featuredProjects.length && (
           <RevealOnScroll delay={0.1}>
             <div className="mt-12 flex justify-center w-full">
               <button
